@@ -1,5 +1,5 @@
 //! My custom Library of rust
-pub mod macros;
+mod macros;
 
 #[cfg(test)]
 mod tests {
