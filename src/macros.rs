@@ -1,3 +1,5 @@
+//!My custom Macros
+
 macro_rules! cin{
     ($($inp: literal),+)=>{}
 }
