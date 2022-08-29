@@ -14,10 +14,4 @@ mod tests {
       sh_cmd!("ls", { ["-l", "-a", "--color=auto"] });
       sh_cmd!("ls",);
    }
-
-   #[test]
-   fn cd_cmd() {
-      sh_cmd!("builtin", "cd", "src");
-      sh_cmd!("ls", { ["-a", "--color=auto"] });
-   }
 }

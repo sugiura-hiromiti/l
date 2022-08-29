@@ -14,9 +14,9 @@ macro_rules! cin {
 /// sh_cmd!($cmd:literal, $($arg:expr),* $($args:block),*)
 /// ````
 ///>Execute shell command. Then show result.
-///>This macro doesn't work with 
+///>This macro doesn't work with
 macro_rules! sh_cmd {
-   ($cmd:literal, $($arg:expr),* $($args:block),*) => {
+   ($cmd:literal, $($arg:literal),* $($args:block)?) => {
       let cmd_name = $cmd;
       let mut cmd = std::process::Command::new($cmd,);
       $(
