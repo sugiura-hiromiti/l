@@ -11,7 +11,7 @@ macro_rules! cin {
 #[macro_export]
 ///```rust
 /// //return ()
-/// sh_cmd!($cmd:literal, $($args:expr),?)
+/// sh_cmd!($cmd:literal, $($args:expr)?)
 /// ````
 ///>Execute shell command. Then show result.
 ///>This macro doesn't work with `cd` command
