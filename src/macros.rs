@@ -13,22 +13,16 @@ macro_rules! cin {
 }
 
 #[macro_export]
-///```rust
-/// //return ()
-/// sh_cmd!($cmd:literal, $($arg:expr),* $($args:block),*)
-/// ````
+/// `sh_cmd!($cmd:literal, $($args:expr)?)` return value is ()
 ///>Execute shell command. Then show result.
-///>This macro doesn't work with
+///>This macro doesn't work with `cd` command
 macro_rules! sh_cmd {
-   ($cmd:literal, $($arg:expr),* $($args:block),*) => {
+   ($cmd:literal, $($args:expr)?) => {
       let cmd_name = $cmd;
       let mut cmd = std::process::Command::new($cmd,);
       $(
-          cmd.arg($arg);
-       )*
-      $(
           cmd.args($args);
-       )*
+       )?
       //show execution result
       let output=cmd.output().unwrap();
       println!("\n |{cmd_name}: {}\n", output.status,);

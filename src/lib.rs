@@ -7,17 +7,9 @@ mod tests {
 
    #[test]
    fn macros_sh_cmd() {
-      sh_cmd!("ls", "-a");
-      sh_cmd!("ls", "-a", "--color=auto");
-      sh_cmd!("ls", "-l", "-a", "--color=auto");
-      sh_cmd!("ls", "-a");
-      sh_cmd!("ls", { ["-l", "-a", "--color=auto"] });
+      sh_cmd!("ls", ["-a"].iter());
+      sh_cmd!("ls", ["-a", "--color=auto"].iter());
+      sh_cmd!("ls", ["-l", "-a", "--color=auto"].iter());
       sh_cmd!("ls",);
-   }
-
-   #[test]
-   fn cd_cmd() {
-      sh_cmd!("builtin", "cd", "src");
-      sh_cmd!("ls", { ["-a", "--color=auto"] });
    }
 }
