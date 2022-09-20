@@ -2,8 +2,9 @@
 
 #[macro_export]
 ///Return stdin
+///`cin!() //no args required`
 macro_rules! cin {
-   ($($inp:literal),+) => {{
+   () => {{
       let mut buf = String::new();
       std::io::stdin()
          .read_line(&mut buf,)
