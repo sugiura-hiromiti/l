@@ -5,7 +5,8 @@
 ///`cin!() //no args required`
 macro_rules! cin {
    ($($stdout:expr)?) => {{
-      println!("{stdout}");
+      let pl = $stdout;
+      println!("{pl}");
       let mut buf = String::new();
       std::io::stdin()
          .read_line(&mut buf,)
