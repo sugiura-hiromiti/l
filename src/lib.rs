@@ -1,5 +1,6 @@
 //! My custom Library of rust
 mod macros;
+pub mod sh;
 
 #[cfg(test)]
 mod tests {
@@ -7,12 +8,10 @@ mod tests {
 
    #[test]
    fn macros_sh_cmd() {
-      sh_cmd!("ls", ["-a"].iter());
-      sh_cmd!("ls", ["-a", "--color=auto"].iter());
-      sh_cmd!("ls", ["-l", "-a", "--color=auto"].iter());
-      sh_cmd!("ls",);
+      sh_cmd!("ls", ["-a"]);
+      sh_cmd!("ls", ["-a", "--color=auto"]);
+      sh_cmd!("ls", ["-l", "-a", "--color=auto"]);
+      //this should cause error sh_cmd!("ls", );
    }
 
-   fn by() {
-   }
 }
