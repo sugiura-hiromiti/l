@@ -22,24 +22,6 @@ macro_rules! cin {
 ///>Execute shell command. Then show result.
 ///>This macro doesn't work with `cd` command
 macro_rules! sh_cmd {
-   ($cmd:literal,$arg:expr)=>{
-      let cmd_name = $cmd;
-      if cmd_name=="cd"{
-         let _cd_rslt=      std::env::set_current_dir($arg).expect("**cd failed**");
-      }else{
-         let mut cmd = std::process::Command::new(cmd_name,);
-         cmd.arg($arg);
-         //show execution result
-         let output=cmd.output().unwrap();
-         println!("\n |{cmd_name:?}: {}\n", output.status,);
-      {
-         use std::io::Write;
-         std::io::stdout().write(&output.stdout,).unwrap();
-         std::io::stderr().write(&output.stderr,).unwrap();
-      };
-   }
-};
-
    ($cmd:literal)=>{
        let cmd_name=$cmd.as_bytes();
        if cmd_name==b"cd"{
@@ -48,27 +30,34 @@ macro_rules! sh_cmd {
            let o=std::process::Command::new(cmd_name).output().unwrap();
            {
                use std::io::{self,Write};
-               stdout().write(&output.stdout).unwrap();
-               stderr().write(&output.stderr).unwrap();
+               stdout().write(&o.stdout).unwrap();
+               stderr().write(&o.stderr).unwrap();
            };
        }
    };
 
    ($cmd:expr, $($args:expr)+) => {
-      let cmd_name = $cmd.as_bytes();
-      let mut cmd = std::process::Command::new($cmd,);
+      let cmd_name = $cmd;
+       if cmd_name.as_bytes()==b"cd"{
+           $(
+          let _cd_rslt=std::env::set_current_dir($args);
+          )?
+       }else{
+                 let mut cmd = std::process::Command::new($cmd,);
       $(
           cmd.args($args);
-       )?
+       )+
       //show execution result
       let output=cmd.output().unwrap();
-      println!("\n |{cmd_name:?}: {}\n", output.status,);
+      println!("\n |{}: {}\n",$cmd, output.status,);
       {
           use std::io::Write;
                 std::io::stdout().write(&output.stdout,).unwrap();
                 std::io::stderr().write(&output.stderr,).unwrap();
 
       };
+
+       }
    };
 
 
