@@ -22,7 +22,7 @@ macro_rules! cin {
 ///>Execute shell command. Then show result.
 ///>This macro doesn't work with `cd` command
 macro_rules! sh_cmd {
-   ($cmd:expr,$arg:literal)=>{
+   ($cmd:expr,$arg:expr)=>{
       let cmd_name = $cmd.as_bytes();
       if cmd_name==b"cd"{
          let _cd_rslt=      std::env::set_current_dir($arg).expect("**cd failed**");
