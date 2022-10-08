@@ -1,4 +1,5 @@
 //! My custom Library of rust
+pub mod cli;
 mod macros;
 pub mod sh;
 
@@ -13,5 +14,4 @@ mod tests {
       sh_cmd!("ls", ["-l", "-a", "--color=auto"]);
       //this should cause error sh_cmd!("ls", );
    }
-
 }
