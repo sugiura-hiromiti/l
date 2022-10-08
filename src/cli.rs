@@ -9,14 +9,10 @@ impl CliParser for Args {
    ///On default, rust's `std::env::args()` returns literally **command line input**.  
    ///This means if you type `cn --lib tntn`, args() is equal to
    ///
-   ///```rust
-   /// "cn --lib tntn".to_string().split_whitespace() 
-   /// ```
+   ///`"cn --lib tntn".to_string().split_whitespace()`
    ///Calling `to_string()` method, this return value is equal to
    ///
-   ///```rust
-   /// "--lib tntn".to_string() 
-   /// ```
+   ///`"--lib tntn".to_string()`
    fn to_string(mut self,) -> String {
       self.next();
       let arg_string: String = self.collect();
