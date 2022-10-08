@@ -22,15 +22,47 @@ macro_rules! cin {
 ///>Execute shell command. Then show result.
 ///>This macro doesn't work with `cd` command
 macro_rules! sh_cmd {
+   ($cmd:expr,$arg:literal)=>{
+      let cmd_name = $cmd.as_bytes();
+      if cmd_name==b"cd"{
+         let _cd_rslt=      std::env::set_current_dir($arg).expect("**cd failed**");
+      }else{
+         let mut cmd = std::process::Command::new($cmd,);
+         cmd.arg($arg);
+         //show execution result
+         let output=cmd.output().unwrap();
+         println!("\n |{cmd_name:?}: {}\n", output.status,);
+      {
+         use std::io::Write;
+         std::io::stdout().write(&output.stdout,).unwrap();
+         std::io::stderr().write(&output.stderr,).unwrap();
+      };
+   }
+};
+
+   ($cmd:literal)=>{
+       let cmd_name=$cmd.as_bytes();
+       if cmd_name==b"cd"{
+          let _cd_rslt=std::env::set_current_dir("~");
+       }else{
+           let o=std::process::Command::new(cmd_name).output().unwrap();
+           {
+               use std::io::{self,Write};
+               stdout().write(&output.stdout).unwrap();
+               stderr().write(&output.stderr).unwrap();
+           };
+       }
+   };
+
    ($cmd:literal, $($args:expr)?) => {
-      let cmd_name = $cmd;
+      let cmd_name = $cmd.as_bytes();
       let mut cmd = std::process::Command::new($cmd,);
       $(
           cmd.args($args);
        )?
       //show execution result
       let output=cmd.output().unwrap();
-      println!("\n |{cmd_name}: {}\n", output.status,);
+      println!("\n |{cmd_name:?}: {}\n", output.status,);
       {
           use std::io::Write;
                 std::io::stdout().write(&output.stdout,).unwrap();
@@ -38,4 +70,6 @@ macro_rules! sh_cmd {
 
       };
    };
+
+
 }

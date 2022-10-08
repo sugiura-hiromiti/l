@@ -12,4 +12,7 @@ mod tests {
       sh_cmd!("ls", ["-l", "-a", "--color=auto"].iter());
       sh_cmd!("ls",);
    }
+
+   fn by() {
+   }
 }
