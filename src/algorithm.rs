@@ -28,9 +28,9 @@ pub fn longest_palindrome(s: String,) -> String {
             palind_radii[center] = palind_radii[mirrored_center];
             center += 1;
          } else if palind_radii[mirrored_center] > max_mirrored_radi {
-            palind_radii[center] = max_mirrored_radi; //NOTE this is legal because
-                                                      //max_mirrored_radi+1 has already proved
-                                                      //ilegal
+            // NOTE: this is legal because max_mirrored_radi+1 has already proved ilegal
+            palind_radii[center] = max_mirrored_radi;
+
             center += 1;
          } else {
             radius = max_mirrored_radi; //palind_radii[mirrored_center] = max_mirrored_radi
@@ -48,4 +48,34 @@ pub fn longest_palindrome(s: String,) -> String {
    }
 
    s_with_bogus[center - radius..center + radius + 1].chars().filter(|&c| c != '|',).collect()
+}
+
+///See more detail at [here](https://leetcode.com/problems/regular-expression-matching/description/)
+///
+///This `fn` supports regular-expression-matching with . & * where:
+/// - '.' matches any single character
+/// - '*' matches zero or more of the preceding element
+///
+/// # Example
+///
+/// ```rust
+/// # use mylibrary::algorithm::regex_match;
+/// assert_eq!(regex_match("bbbba".to_string(), ".*a*a".to_string()), true);
+/// assert_eq!(regex_match("a".to_string(), ".*..a*".to_string()), false);
+/// assert_eq!(regex_match("ab".to_string(), ".*..".to_string()), true);
+/// ```
+pub fn regex_match(s: String, p: String,) -> bool {
+   if p.is_empty() {
+      return s.is_empty();
+   }
+
+   let first_match =
+      !s.is_empty() && (p.chars().nth(0,) == s.chars().nth(0,) || p.chars().nth(0,) == Some('.',));
+
+   if p.len() >= 2 && p.chars().nth(1,) == Some('*',) {
+      regex_match(s.clone(), p[2..].to_string(),)
+         || (first_match && regex_match(s[1..].to_string(), p,))
+   } else {
+      first_match && regex_match(s[1..].to_string(), p[1..].to_string(),)
+   }
 }
