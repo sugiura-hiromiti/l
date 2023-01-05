@@ -24,15 +24,13 @@ macro_rules! cin {
 /// **Doesn't support `cd`. If you want execute `cd`, use `cd` function**
 macro_rules! sh_cmd {
 	($cmd:expr, $args:expr) => {
-		println!("[Executing {$cmd} {args:?}]");
+		println!("[Executing {} {:?}]", $cmd, $args);
 		let mut cmd = std::process::Command::new($cmd,);
 		cmd.args($args,);
 
 		//show execution result
 		let output = cmd.output().unwrap();
-		if !output.status.contains("exit status: 0",) {
-			println!("\n |{}: {}\n", $cmd, output.status,);
-		}
+		println!("\n |{}: {}\n", $cmd, output.status,);
 		{
 			use std::io::Write;
 			std::io::stdout().write(&output.stdout,).unwrap();
