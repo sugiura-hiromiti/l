@@ -30,7 +30,9 @@ macro_rules! sh_cmd {
 
 		//show execution result
 		let output = cmd.output().unwrap();
-		println!("\n |{}: {}\n", $cmd, output.status,);
+		if !output.status.contains("exit status: 0",) {
+			println!("\n |{}: {}\n", $cmd, output.status,);
+		}
 		{
 			use std::io::Write;
 			std::io::stdout().write(&output.stdout,).unwrap();
