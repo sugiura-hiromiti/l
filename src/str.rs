@@ -1,3 +1,5 @@
+//#![allow(unused)]
+
 trait Size {
 	fn size(&self,) -> usize;
 }
@@ -23,6 +25,22 @@ impl std::ops::RangeBounds<usize,> for MyUsize {
 	fn start_bound(&self,) -> std::ops::Bound<&usize,> { std::ops::Bound::Included(&self.0,) }
 
 	fn end_bound(&self,) -> std::ops::Bound<&usize,> { std::ops::Bound::Included(&self.0,) }
+}
+
+fn stoi(s: &str,) -> u32 {
+	match s {
+		"1" => 1,
+		"2" => 2,
+		"3" => 3,
+		"4" => 4,
+		"5" => 5,
+		"6" => 6,
+		"7" => 7,
+		"8" => 8,
+		"9" => 9,
+		"0" => 0,
+		_ => panic!("`s` should be digit"),
+	}
 }
 
 // NOTE: if use strategy *add* -------------------------
@@ -71,7 +89,7 @@ fn mul_string(n: &mut String, times: char,) {
 	let mut moved_up = 0;
 	let mut i = MyUsize(0,);
 	while i < len {
-		let mut mul = &mut MyStr(cus_n[i].mul(times,),);
+		let mul = &mut MyStr(cus_n[i].mul(times,),);
 		add_string(mul, &MyStr(moved_up.to_string(),),);
 		if mul.0.len() == 1 {
 			n.replace_range(i, &mul.0,);
