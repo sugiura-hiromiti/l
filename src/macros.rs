@@ -18,13 +18,16 @@ macro_rules! cin {
 }
 
 #[macro_export]
-/// `sh_cmd!($cmd:literal, $($args:expr)?)` return value is ()
-///>Execute shell command. Then show result.
-///
-/// **Doesn't support `cd`. If you want execute `cd`, use `cd` function**
+/// # Params
+/// `sh_cmd!($cmd:literal, $args:expr)`:
+/// - $cmd: command itself
+/// - $args: iterator of arguments to be passed to `$cmd`
+/// # Return
+/// return value is ()
+/// # Explanation
+/// Execute shell command. Then show result.
 macro_rules! sh_cmd {
 	($cmd:expr, $args:expr) => {
-		println!("[Executing {} {:?}]", $cmd, $args);
 		let mut cmd = std::process::Command::new($cmd,);
 		cmd.args($args,);
 

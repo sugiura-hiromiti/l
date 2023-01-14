@@ -14,6 +14,8 @@ mod tests {
 		sh_cmd!("ls", ["-a"]);
 		sh_cmd!("ls", ["-a", "--color=auto"]);
 		sh_cmd!("ls", ["-l", "-a", "--color=auto"]);
+		let stringgg = "echoo".to_string();
+		sh_cmd!("echo", [stringgg]);
 	}
 
 	#[test]
