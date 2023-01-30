@@ -11,8 +11,8 @@ mod tests {
 
 	#[test]
 	fn macros_sh_cmd() {
-		let _ = sh_cmd!("cd");
-		let _ = sh_cmd!("ls", ["-a"]);
+		sh_cmd!("cd", [std::env::var("HOME").unwrap()]).unwrap_err();
+		sh_cmd!("ls", ["-a"]).unwrap();
 	}
 
 	#[test]

@@ -18,38 +18,35 @@ macro_rules! cin {
 }
 
 #[macro_export]
+/// execute `$cmd`.
+/// # Return
+///
+/// this macro returns `std::io::Result<()>`
 macro_rules! sh_cmd {
-	($cmd:expr, $($args:expr)+) => {
-		if $cmd!="cd"{
+	($cmd:expr, $args:expr) => {{
+		if $cmd != "cd" {
 			let mut cmd = std::process::Command::new($cmd,);
-			$(cmd.args($args);)+
+			cmd.args($args,);
 			cmd.output()
-		}else{
-			panic!("too many arguments for `cd`");
-		}
-	};
-
-	($cmd:expr, $args:expr)=>{
-		if $cmd=="cd"{
-			std::env::set_current_dir(std::env::var($args))
-		}else{
-			let mut cmd = std::process::Command::new($cmd,);
-			cmd.arg($args);
-			cmd.output()
-		}
-	};
-
-	($cmd:expr)=>{
-		{
-			if $cmd=="cd"{
-				match std::env::set_current_dir(std::env::var("HOME").expect("|>env_var $HOME not found")) {
-					Ok(())=>Err(std::io::Error::new(	std::io::ErrorKind::Other,"cd succeed")),
-					Err(e)=>panic!("{e}")
-				}
-			}else{
-				let mut cmd = std::process::Command::new($cmd,);
-				cmd.output()
+		} else {
+			match std::env::set_current_dir(&$args[0],) {
+				Ok((),) => Err(std::io::Error::new(std::io::ErrorKind::Other, "cd succeed",),),
+				Err(e,) => panic!("{e}"),
 			}
 		}
-	};
+	}};
+
+	($cmd:expr) => {{
+		if $cmd == "cd" {
+			match std::env::set_current_dir(
+				std::env::var("HOME",).expect("|>env_var $HOME not found",),
+			) {
+				Ok((),) => Err(std::io::Error::new(std::io::ErrorKind::Other, "cd succeed",),),
+				Err(e,) => panic!("{e}"),
+			}
+		} else {
+			let mut cmd = std::process::Command::new($cmd,);
+			cmd.output()
+		}
+	}};
 }
