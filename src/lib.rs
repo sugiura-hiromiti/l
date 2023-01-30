@@ -11,11 +11,8 @@ mod tests {
 
 	#[test]
 	fn macros_sh_cmd() {
-		sh_cmd!("ls", ["-a"]);
-		sh_cmd!("ls", ["-a", "--color=auto"]);
-		sh_cmd!("ls", ["-l", "-a", "--color=auto"]);
-		let stringgg = "echoo".to_string();
-		sh_cmd!("echo", [stringgg]);
+		let rslt = sh_cmd!("exa", ["--color=never"]).unwrap();
+		println!("{rslt:?}");
 	}
 
 	#[test]
