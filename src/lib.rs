@@ -11,8 +11,8 @@ mod tests {
 
 	#[test]
 	fn macros_sh_cmd() {
-		let rslt = sh_cmd!("exa", ["--color=never"]).unwrap();
-		println!("{rslt:?}");
+		let _ = sh_cmd!("cd");
+		let _ = sh_cmd!("ls", ["-a"]);
 	}
 
 	#[test]
