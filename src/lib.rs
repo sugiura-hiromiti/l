@@ -11,7 +11,7 @@ mod tests {
 
 	#[test]
 	fn macros_sh_cmd() {
-		sh_cmd!("cd", [std::env::var("HOME").unwrap()]).unwrap_err();
+		sh_cmd!("cd", "is cur ./".split_whitespace()).unwrap_err();
 		sh_cmd!("ls", ["-a"]).unwrap();
 	}
 

@@ -29,7 +29,7 @@ macro_rules! sh_cmd {
 			cmd.args($args,);
 			cmd.output()
 		} else {
-			match std::env::set_current_dir(&$args[0],) {
+			match std::env::set_current_dir(&$args.last().unwrap(),) {
 				Ok((),) => Err(std::io::Error::new(std::io::ErrorKind::Other, "cd succeed",),),
 				Err(e,) => panic!("{e}"),
 			}
