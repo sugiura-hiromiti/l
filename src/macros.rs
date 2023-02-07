@@ -21,17 +21,20 @@ macro_rules! cin {
 /// execute `$cmd`.
 /// # Return
 ///
-/// this macro returns `std::io::Result<()>`
+/// this macro returns `anyhow::Result<Option<Output>>` `Output == std::process::Output`
 macro_rules! sh_cmd {
 	($cmd:expr, $args:expr) => {{
 		if $cmd != "cd" {
 			let mut cmd = std::process::Command::new($cmd,);
 			cmd.args($args,);
-			cmd.output()
+			match cmd.output() {
+				Err(e,) => Err(anyhow::anyhow!("{e}"),),
+				Ok(o,) => Ok(Some(o,),),
+			}
 		} else {
 			match std::env::set_current_dir(&$args.last().unwrap(),) {
-				Ok((),) => Err(std::io::Error::new(std::io::ErrorKind::Other, "cd succeed",),),
-				Err(e,) => panic!("{e}"),
+				Ok((),) => Ok(None,),
+				Err(e,) => Err(anyhow::anyhow!("{e}"),),
 			}
 		}
 	}};
@@ -41,12 +44,15 @@ macro_rules! sh_cmd {
 			match std::env::set_current_dir(
 				std::env::var("HOME",).expect("|>env_var $HOME not found",),
 			) {
-				Ok((),) => Err(std::io::Error::new(std::io::ErrorKind::Other, "cd succeed",),),
-				Err(e,) => panic!("{e}"),
+				Ok((),) => Ok(None,),
+				Err(e,) => Err(anyhow::anyhow!("{e}"),),
 			}
 		} else {
 			let mut cmd = std::process::Command::new($cmd,);
-			cmd.output()
+			match cmd.output() {
+				Ok(o,) => Ok(Some(o,),),
+				Err(e,) => Err(anyhow::anyhow!("{e}"),),
+			}
 		}
 	}};
 }

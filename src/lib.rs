@@ -5,6 +5,12 @@ mod macros;
 pub mod sh;
 pub mod str;
 
+#[allow(unused)]
+fn tmp() -> anyhow::Result<i32,> {
+	Ok::<i32, anyhow::Error,>(1,)?;
+	Err(anyhow::anyhow!("hello"),)
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -13,6 +19,7 @@ mod tests {
 	fn macros_sh_cmd() {
 		sh_cmd!("cd", "is cur ./".split_whitespace()).unwrap_err();
 		sh_cmd!("ls", ["-a"]).unwrap();
+		let o = std::process::Command::new("ls",).output();
 	}
 
 	#[test]
