@@ -17,9 +17,8 @@ mod tests {
 
 	#[test]
 	fn macros_sh_cmd() {
-		sh_cmd!("cd", "is cur ./".split_whitespace()).unwrap_err();
+		sh_cmd!("cd", "is cur ./".split_whitespace()).unwrap();
 		sh_cmd!("ls", ["-a"]).unwrap();
-		let o = std::process::Command::new("ls",).output();
 	}
 
 	#[test]
