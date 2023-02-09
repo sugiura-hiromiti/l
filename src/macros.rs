@@ -11,9 +11,8 @@ macro_rules! cin {
         )?
       let mut buf = String::new();
       std::io::stdin()
-         .read_line(&mut buf,)
-         .expect("error from mylibrary::marcos::cin!: failed at read_line",);
-      buf
+         .read_line(&mut buf,).expect("error from mylibrary::marcos::cin!: failed at read_line",);
+     buf.trim().to_string()
    }};
 }
 
@@ -57,4 +56,12 @@ macro_rules! sh_cmd {
 			}
 		}
 	}};
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn cin_tes() { let a = cin!(); }
 }
