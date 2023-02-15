@@ -4,6 +4,12 @@ version = "1.1.2"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license = "MIT"
+description = "my personal library"
+homepage = ""
+documentation = ""
+repository = "https://github.com/sugiura-hiromichi/mylibrary"
+readme = "README.md"
 
 [dependencies]
 anyhow = "1.0"
