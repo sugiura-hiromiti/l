@@ -59,7 +59,7 @@ pub fn longest_palindrome(s: String,) -> String {
 /// # Example
 ///
 /// ```rust
-/// # use sugiura_hiromichi_mylibrary::algorithm::regex_match;
+/// # use mylibrary_::algorithm::regex_match;
 /// assert_eq!(regex_match("bbbba".to_string(), ".*a*a".to_string()), true);
 /// assert_eq!(regex_match("a".to_string(), ".*..a*".to_string()), false);
 /// assert_eq!(regex_match("ab".to_string(), ".*..".to_string()), true);
