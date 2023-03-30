@@ -1,15 +1,15 @@
 [package]
-name = "sugiura-hiromichi_mylibrary"
+name = "mylibrary_"
 version = "1.1.3"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-license = "MIT"
-description = "my personal library"
-homepage = "https://github.com/sugiura-hiromichi/mylibrary"
 documentation = "https://github.com/sugiura-hiromichi/mylibrary"
-repository = "https://github.com/sugiura-hiromichi/mylibrary"
+homepage = "https://github.com/sugiura-hiromichi/mylibrary"
+license = "MIT"
 readme = "README.md"
+repository = "https://github.com/sugiura-hiromichi/mylibrary"
+description = "my personal library"
 
 [dependencies]
 anyhow = "1.0"
