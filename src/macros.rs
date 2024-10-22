@@ -60,18 +60,18 @@ macro_rules! sh_cmd {
 
 #[macro_export]
 macro_rules! test_print {
-	($exp:expr) => {
+	($exp:expr) => {{
 		use std::io::Write;
 		writeln!(std::io::stdout().lock(), $exp).unwrap();
-	};
+	}};
 }
 
 #[macro_export]
 macro_rules! test_eprint {
-	($exp:expr) => {
+	($exp:expr) => {{
 		use std::io::Write;
 		writeln!(std::io::stderr().lock(), $exp).unwrap();
-	};
+	}};
 }
 
 #[cfg(test)]
