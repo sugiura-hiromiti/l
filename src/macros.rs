@@ -58,10 +58,37 @@ macro_rules! sh_cmd {
 	}};
 }
 
+#[macro_export]
+macro_rules! test_print {
+	($exp:expr) => {
+		use std::io::Write;
+		writeln!(std::io::stdout().lock(), $exp).unwrap();
+	};
+}
+
+#[macro_export]
+macro_rules! test_eprint {
+	($exp:expr) => {
+		use std::io::Write;
+		writeln!(std::io::stderr().lock(), $exp).unwrap();
+	};
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
 
+	/*
+	   #[test]
+	   fn cin_tes() { let a = cin!(); }
+	*/
+
 	#[test]
-	fn cin_tes() { let a = cin!(); }
+	fn test_with_stdout() {
+		test_print!("🫠 from `crate::macros::tests::test_with_stdout`");
+	}
+	#[test]
+	fn test_with_stderr() {
+		test_eprint!("🫠 from `crate::macros::tests::test_with_stderr`");
+	}
 }
