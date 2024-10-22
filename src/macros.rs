@@ -62,12 +62,28 @@ macro_rules! sh_cmd {
 macro_rules! test_print {
 	($exp:expr) => {{
 		use std::io::Write;
-		writeln!(std::io::stdout().lock(), $exp).unwrap();
+		write!(std::io::stdout().lock(), $exp).unwrap();
 	}};
 }
 
 #[macro_export]
 macro_rules! test_eprint {
+	($exp:expr) => {{
+		use std::io::Write;
+		write!(std::io::stderr().lock(), $exp).unwrap();
+	}};
+}
+
+#[macro_export]
+macro_rules! test_println {
+	($exp:expr) => {{
+		use std::io::Write;
+		writeln!(std::io::stdout().lock(), $exp).unwrap();
+	}};
+}
+
+#[macro_export]
+macro_rules! test_eprintln {
 	($exp:expr) => {{
 		use std::io::Write;
 		writeln!(std::io::stderr().lock(), $exp).unwrap();
@@ -76,8 +92,6 @@ macro_rules! test_eprint {
 
 #[cfg(test)]
 mod tests {
-	use super::*;
-
 	/*
 	   #[test]
 	   fn cin_tes() { let a = cin!(); }
@@ -90,5 +104,13 @@ mod tests {
 	#[test]
 	fn test_with_stderr() {
 		test_eprint!("🫠 from `crate::macros::tests::test_with_stderr`");
+	}
+	#[test]
+	fn test_with_stdout_nl() {
+		test_println!("🫠 from `crate::macros::tests::test_with_stdout`");
+	}
+	#[test]
+	fn test_with_stderr_nl() {
+		test_eprintln!("🫠 from `crate::macros::tests::test_with_stderr`");
 	}
 }

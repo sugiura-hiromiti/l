@@ -1,6 +1,6 @@
 //#![allow(unused)]
 
-trait Size {
+pub trait Size {
 	fn size(&self,) -> usize;
 }
 impl Size for usize {
@@ -11,7 +11,7 @@ impl Size for MyUsize {
 }
 
 #[derive(Clone,)]
-struct MyStr(String,);
+pub struct MyStr(String,);
 impl<S: Size,> std::ops::Index<S,> for MyStr {
 	type Output = str;
 
@@ -19,7 +19,7 @@ impl<S: Size,> std::ops::Index<S,> for MyStr {
 }
 
 #[derive(PartialOrd, PartialEq, Clone, Copy,)]
-struct MyUsize(usize,);
+pub struct MyUsize(usize,);
 
 impl std::ops::RangeBounds<usize,> for MyUsize {
 	fn start_bound(&self,) -> std::ops::Bound<&usize,> { std::ops::Bound::Included(&self.0,) }
@@ -27,7 +27,7 @@ impl std::ops::RangeBounds<usize,> for MyUsize {
 	fn end_bound(&self,) -> std::ops::Bound<&usize,> { std::ops::Bound::Included(&self.0,) }
 }
 
-trait CustomMul {
+pub trait CustomMul {
 	fn mul(&self, times: char,) -> String;
 }
 impl CustomMul for str {
