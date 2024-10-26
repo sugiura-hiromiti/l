@@ -97,6 +97,7 @@ macro_rules! test_eprintln {
 /// # Parameter
 ///
 /// ```rust
+/// use mylibrary_::layout;
 /// layout!(Foo, size: 8, align: 8);
 /// ```
 ///
