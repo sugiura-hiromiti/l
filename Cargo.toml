@@ -12,4 +12,4 @@ repository = "https://github.com/sugiura-hiromichi/mylibrary"
 description = "my personal library"
 
 [dependencies]
-anyhow = "*"
+anyhow = "1.0.91"
