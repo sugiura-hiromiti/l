@@ -18,6 +18,7 @@ macro_rules! cin {
 
 #[macro_export]
 /// execute `$cmd`.
+///
 /// # Return
 ///
 /// this macro returns `anyhow::Result<Option<Output>>` `Output == std::process::Output`
@@ -87,6 +88,28 @@ macro_rules! test_eprintln {
 	($exp:expr) => {{
 		use std::io::Write;
 		writeln!(std::io::stderr().lock(), $exp).unwrap();
+	}};
+}
+
+#[macro_export]
+/// 型のメモリサイズとアライメントをチェックするマクロです
+///
+/// # Parameter
+///
+/// ```rust
+/// layout!(Foo, size: 8, align: 8);
+/// ```
+///
+/// 上の例のように，第一引数に型，第二引数にサイズ，第三引数にアライメントを渡してやります
+///
+/// # Panic
+///
+/// 型に対して，サイズかアライメントが異なる場合assertion errorを起こします
+macro_rules! layout {
+	($t:ty,size: $size:expr,align: $align:expr) => {{
+		let a = std::alloc::Layout::new::<$t,>();
+		assert_eq!(a.size(), $size);
+		assert_eq!(a.align(), $align);
 	}};
 }
 
