@@ -98,7 +98,7 @@ macro_rules! test_eprintln {
 ///
 /// ```rust
 /// use mylibrary_::layout;
-/// layout!(Foo, size: 8, align: 8);
+/// layout!(&str, size: 0x10, align: 8);
 /// ```
 ///
 /// 上の例のように，第一引数に型，第二引数にサイズ，第三引数にアライメントを渡してやります
