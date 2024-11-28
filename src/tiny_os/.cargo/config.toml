@@ -1,0 +1,11 @@
+[build]
+target = "tiny_os.json"
+
+[unstable]
+build-std = ["core", "compiler_builtins", "alloc"]
+build-std-features = ["compiler-builtins-mem"]
+
+[target.'cfg(target_os="none")']
+runner = "bootimage runner"
+
+#[target.thumbv7em-none-eabihf]
