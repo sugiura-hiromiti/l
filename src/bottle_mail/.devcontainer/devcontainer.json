@@ -1,0 +1,16 @@
+{
+    "name": "bottle_mail_sample",
+    "dockerComposeFile": "../compose.yaml",
+    "service": "bottle_mail_sample",
+    "remoteUser": "rustuser",
+    "workspaceFolder": "/app",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "rust-lang.rust-analyzer",
+                "serayuzgur.crates",
+				"tamasfe.even-better-toml"
+            ]
+        }
+    }
+}

@@ -1,0 +1,11 @@
+services:
+  bottle_mail_sample:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    image: bottle_mail_sample
+    container_name: bottle_mail_sample_compose
+    volumes:
+      - .:/app
+    working_dir: /app-compose
+    tty: true
