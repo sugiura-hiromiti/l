@@ -1,3 +1,5 @@
+#  TODO: rename crate to a more simple & short one
+
 [package]
 name = "mylibrary_"
 version = "1.2.7"
