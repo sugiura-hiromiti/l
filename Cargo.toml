@@ -1,7 +1,7 @@
 #  TODO: rename crate to a more simple & short one
 
 [package]
-name = "mylibrary_"
+name = "l"
 version = "1.2.7"
 edition = "2021"
 
