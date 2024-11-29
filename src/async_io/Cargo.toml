@@ -1,0 +1,9 @@
+[package]
+name = "async_io"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "*"
+futures = { version = "*", features = ["thread-pool"] }
+mylibrary_ = "*"

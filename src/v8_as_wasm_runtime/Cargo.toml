@@ -1,0 +1,12 @@
+[package]
+name = "v8_as_wasm_runtime"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "*"
+tokio = { version = "*", features = ["rt-multi-thread"] }
+v8 = "*"
+wasi-common = "*"
+wat = "*"
+wiggle = "*"

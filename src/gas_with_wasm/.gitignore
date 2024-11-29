@@ -1,0 +1,11 @@
+!target/wasm32-unknown-unknown/debug/gas_with_wasm.wasm
+target/debug/
+target/wasm32-unknown-unknown/CACHEDIR.TAG
+target/wasm32-unknown-unknown/debug/build/
+target/wasm32-unknown-unknown/debug/deps/
+target/wasm32-unknown-unknown/debug/examples/
+target/wasm32-unknown-unknown/debug/incremental/
+target/wasm32-unknown-unknown/debug/.fingerprint/
+target/wasm32-unknown-unknown/debug/.cargo-lock
+target/wasm32-unknown-unknown/debug/gas_with_wasm.d
+target/wasm32-unknown-unknown/debug/libgas_with_wasm*
