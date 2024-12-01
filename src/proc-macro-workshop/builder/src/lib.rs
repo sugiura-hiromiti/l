@@ -1,83 +1,149 @@
+#![feature(const_type_name)]
+mod extract;
+mod store;
+
+use extract::*;
 use proc_macro::TokenStream;
+use store::*;
 
-struct Store {
-	ident:           syn::Ident,
-	builder_ident:   syn::Ident,
-	generics:        syn::Generics,
-	optional_fields: Vec<syn::Field,>,
-	naked_fields:    Vec<syn::Field,>,
-}
+fn target_impl(store: &Store,) -> proc_macro2::TokenStream {
+	let Store { ident, builder_ident, .. } = &store;
+	let head = store.generics_template(ident,);
+	let members = store.members();
 
-impl Store {
-	fn new(input: TokenStream,) -> Self {
-		let input = &syn::parse_macro_input!(input as syn::DeriveInput);
-
-		let ident = original_name(input,);
-		let builder_ident = builder_name(&ident,);
-		let generics = generics(input,);
-
-		let mut fields = fields(input,).into_iter().collect();
-		let optional_fields = optional_fields(&mut fields,);
-		let naked_fields = fields;
-
-		Self { ident, builder_ident, generics, optional_fields, naked_fields, }
-	}
-}
-
-fn original_name(input: &syn::DeriveInput,) -> syn::Ident {
-	input.ident.clone()
-}
-
-fn builder_name(ident: &syn::Ident,) -> syn::Ident {
-	quote::format_ident!("{ident}Builder")
-}
-
-fn optional_fields(field_vec: &mut Vec<syn::Field,>,) -> Vec<syn::Field,> {
-	let mut optional_fields = vec![];
-
-	let mut i = 0;
-	while i < field_vec.len() {
-		if type_is_option(&field_vec[i],) {
-			// if type of a field is `Option`, add to `optional_fields`
-			// And remove that element from `field_vec`
-			// for having `field_vec` representing fields which type is naked
-			let opt_f = field_vec.remove(i,);
-			optional_fields.push(opt_f,);
-		} else {
-			// if type of a field is not `Option`,
-			i += 1;
+	quote::quote! {
+		impl #head {
+			pub fn builder() -> #builder_ident {
+				#builder_ident {
+					#(#members: std::option::Option::None,)*
+				}
+			}
 		}
 	}
-
-	optional_fields
 }
 
-fn fields(input: &syn::DeriveInput,) -> syn::Fields {
-	match &input.data {
-		syn::Data::Struct(data_struct,) => data_struct.fields.clone(),
-		syn::Data::Enum(_data_enum,) => todo!(),
-		syn::Data::Union(_data_union,) => todo!(),
+fn builder_decl(store: &Store,) -> proc_macro2::TokenStream {
+	let Store { builder_ident, .. } = &store;
+	let (ident, ty,): (Vec<&syn::Ident,>, Vec<&syn::Type,>,) =
+		store.fields().map(ident_and_ty,).unzip();
+	let head = store.generics_template(builder_ident,);
+
+	quote::quote! {
+		pub struct #head {
+			#(#ident: #ty,)*
+		}
 	}
 }
 
-fn type_is_option(field: &syn::Field,) -> bool {
-	let syn::Type::Path(syn::TypePath { ref path, .. },) = field.ty else {
-		return false;
+fn setter_impl(store: &Store,) -> Result<proc_macro2::TokenStream, syn::Error,> {
+	let head = store.generics_template(&store.builder_ident,);
+
+	let methods = store.fields().map(setter_for_a_field,).try_fold(
+		quote::quote! {},
+		|accum, ts| match ts {
+			Ok(ts,) => Ok(quote::quote! {
+				#accum
+				#ts
+			},),
+			Err(e,) => Err(e,),
+		},
+	)?;
+	// let types = store.fields().map(|f| {
+	// 	let f = unwrap(f.clone(),);
+	// 	f.ty
+	// },);
+
+	Ok(quote::quote! {
+		impl #head {
+			#methods
+		}
+	},)
+}
+
+fn setter_for_a_field(f: &syn::Field,) -> Result<proc_macro2::TokenStream, syn::Error,> {
+	let Setter { ident, param_type, kind, } = Setter::new(f,)?;
+
+	let signature = quote::quote! {
+		pub fn #ident(&mut self, #ident: #param_type) -> &mut Self
 	};
-	let type_name = path.segments.last().unwrap();
 
-	type_name.ident == "Option"
+	let block = match kind {
+		SetterKind::Each => {
+			let field_ident = f.ident.as_ref().unwrap();
+			quote::quote! {
+					if let std::option::Option::Some(ref mut field) = self.#field_ident {
+						field.push(#ident);
+					} else {
+						self.#field_ident = std::option::Option::Some(vec![#ident]);
+					}
+
+					self
+			}
+		},
+		SetterKind::Straight => quote::quote! {
+			self.#ident=std::option::Option::Some(#ident);
+			self
+		},
+	};
+
+	Ok(quote::quote! {
+		#signature {
+			#block
+		}
+	},)
 }
 
-fn generics(input: &syn::DeriveInput,) -> syn::Generics {
-	input.generics.clone()
+fn build_impl(store: &Store,) -> proc_macro2::TokenStream {
+	let Store { ident, builder_ident, optional_fields, naked_fields, .. } = &store;
+	let head = store.generics_template(builder_ident,);
+	let optional_fields_ident: Vec<Option<&syn::Ident,>,> =
+		optional_fields.iter().map(crate::ident,).collect();
+	let naked_fields_ident: Vec<Option<&syn::Ident,>,> =
+		naked_fields.iter().map(crate::ident,).collect();
+
+	quote::quote! {
+		impl #head {
+			pub fn build(&mut self) -> std::result::Result<#ident, std::boxed::Box<dyn std::error::Error>> {
+				#(
+					let #optional_fields_ident = self.#optional_fields_ident.clone();
+				)*
+				#(
+					let #naked_fields_ident = self.#naked_fields_ident.clone().unwrap_or_default();
+				)*
+
+				std::result::Result::Ok(
+					#ident {
+						#(
+							#optional_fields_ident,
+						)*
+						#(
+							#naked_fields_ident,
+						)*
+					}
+				)
+			}
+		}
+	}
 }
 
-#[proc_macro_derive(Builder)]
+#[proc_macro_derive(Builder, attributes(builder))]
 pub fn derive(input: TokenStream,) -> TokenStream {
+	let input = &syn::parse_macro_input!(input as syn::DeriveInput);
 	let store = Store::new(input,);
 
-	let decl = quote::quote! {};
+	let impl_target = target_impl(&store,);
+	let decl_builder = builder_decl(&store,);
+	let impl_setter = match setter_impl(&store,) {
+		Ok(ts,) => ts,
+		Err(e,) => return e.to_compile_error().into(),
+	};
+	let impl_build = build_impl(&store,);
 
-	unimplemented!()
+	quote::quote! {
+		#impl_target
+		#decl_builder
+		#impl_setter
+		#impl_build
+	}
+	.into()
 }
