@@ -1,5 +1,6 @@
 //! My custom Library of rust
 pub mod algorithm;
+pub mod better;
 pub mod cli;
 mod macros;
 pub mod sh;
