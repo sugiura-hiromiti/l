@@ -1,0 +1,24 @@
+[package]
+name = "so-cold"
+version = "0.1.0"
+authors = ["sugiura-hiromichi <sugiura130418@icloud.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-recursion = "*"
+chrono = { version = "*", features = ["serde"] }
+dioxus = { version = "0.5.6", features = [
+	"web",
+	"router",
+] } # version should be 0.6
+futures = "*"
+num-traits = "*"
+reqwest = { version = "*", features = ["json"] }
+serde = { version = "*", features = ["derive"] }
+serde_json = "*"
+log = "*"
+
+# Debug
+dioxus-logger = "*"

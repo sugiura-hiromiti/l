@@ -9,27 +9,22 @@
 //
 // Resources:
 //
-//   - The Debug trait:
-//     https://doc.rust-lang.org/std/fmt/trait.Debug.html
+//   - The Debug trait: https://doc.rust-lang.org/std/fmt/trait.Debug.html
 //
-//   - The DebugStruct helper for formatting structs correctly:
-//     https://doc.rust-lang.org/std/fmt/struct.DebugStruct.html
+//   - The DebugStruct helper for formatting structs correctly: https://doc.rust-lang.org/std/fmt/struct.DebugStruct.html
 
 use derive_debug::CustomDebug;
 
-#[derive(CustomDebug)]
+#[derive(CustomDebug,)]
 pub struct Field {
-    name: &'static str,
-    bitmask: u8,
+	name:    &'static str,
+	bitmask: u8,
 }
 
 fn main() {
-    let f = Field {
-        name: "F",
-        bitmask: 0b00011100,
-    };
+	let f = Field { name: "F", bitmask: 0b00011100, };
 
-    let debug = format!("{:?}", f);
+	let debug = format!("{:?}", f);
 
-    assert!(debug.starts_with(r#"Field { name: "F","#));
+	assert!(debug.starts_with(r#"Field { name: "F","#));
 }
