@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	@font-face {
+		font-family: 'snf';
+		font-style: normal;
+		font-weight: normal;
+		font-display: swap;
+		src: url('./web_fonts/sarasa-fixed-cl-extralight-nerd-font.woff2') format('woff2');
+	}
+
+	/* } */
+	/**/
+	/* @layer base { */
+	@font-face {
+		font-family: 'snf';
+		font-style: normal;
+		font-weight: bold;
+		font-display: swap;
+		src: url('./web_fonts/sarasa-fixed-cl-light-nerd-font.woff2') format('woff2');
+	}
+
+	/* } */
+	/**/
+	/* @layer base { */
+	@font-face {
+		font-family: 'snf';
+		font-style: italic;
+		font-weight: normal;
+		font-display: swap;
+		src: url('./web_fonts/sarasa-fixed-cl-extralightitalic-nerd-font.woff2') format('woff2');
+	}
+
+	/* } */
+	/**/
+	/* @layer base { */
+	@font-face {
+		font-family: 'snf';
+		font-style: italic;
+		font-weight: bold;
+		font-display: swap;
+		src: url('./web_fonts/sarasa-fixed-cl-lightitalic-nerd-font.woff2') format('woff2');
+	}
+}

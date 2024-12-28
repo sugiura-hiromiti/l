@@ -2,23 +2,40 @@
 name = "so-cold"
 version = "0.1.0"
 authors = ["sugiura-hiromichi <sugiura130418@icloud.com>"]
-edition = "2021"
+edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 async-recursion = "*"
 chrono = { version = "*", features = ["serde"] }
-dioxus = { version = "0.5.6", features = [
+dioxus = { version = "*", features = [
 	"web",
 	"router",
-] } # version should be 0.6
+	"document",
+	"fullstack",
+] }
 futures = "*"
 num-traits = "*"
 reqwest = { version = "*", features = ["json"] }
 serde = { version = "*", features = ["derive"] }
 serde_json = "*"
-log = "*"
 
-# Debug
-dioxus-logger = "*"
+# [features]
+# default = ["web"]
+# web = ["dioxus/web"]
+# desktop = ["dioxus/desktop"]
+# mobile = ["dioxus/mobile"]
+# server=["dioxus/server"]
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
