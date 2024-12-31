@@ -16,12 +16,12 @@ pub fn story_list(story: ReadOnlySignal<data::StoryItem,>,) -> Element {
 	let comments = count_of(kids.len(), "comment",);
 	let time = time.format("%D %H:%M",);
 
-	let pl = format!("pl{}", TW_PAD_W);
+	let pl = format!("pl{}", TW_PAD_S);
 	let full_story = use_signal(|| None,);
 	let preview_state = consume_context::<Signal<data::PreviewState,>,>();
 	rsx! {
 		div {
-			class: format!("p{}", TW_PAD_W),
+			class: format!("p{}", TW_PAD_S),
 			onmouseenter: move |_| { hackernews::resolve_story(full_story, preview_state, id) },
 			div { class: TW_FONT_L,
 				a {

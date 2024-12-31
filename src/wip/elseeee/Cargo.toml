@@ -14,8 +14,10 @@ divan = "*"
 
 [dependencies]
 anyhow = "*"
+chrono = "*"
 libc = "*"
 mylibrary_ = "*"
 pin-project = "*"
 pin-utils = "*"
 quote = "*"
+rusqlite = "*"

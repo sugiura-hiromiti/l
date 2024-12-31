@@ -22,4 +22,24 @@ mod tests {
 		assert_eq!("Rustとluaが好きでよく触っています 布教したい", my_fav_lang);
 		Ok((),)
 	}
+
+	#[test]
+	fn sqlite() -> Rslt<(),> {
+		let connect = rusqlite::Connection::open_in_memory()?;
+		connect.execute_batch(
+			"create table if not exists articles (
+				id integer primary key,
+				date text not null
+		);",
+		)?;
+
+		let should_one = connect.execute(
+			"insert into articles (date) values (?1)",
+			&[&chrono::Local::now().timestamp(),],
+		)?;
+
+		assert_eq!(1, should_one);
+
+		Ok((),)
+	}
 }

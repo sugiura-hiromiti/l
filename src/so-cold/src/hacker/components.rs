@@ -24,7 +24,7 @@ pub fn stories() -> Element {
 pub fn preview() -> Element {
 	use data::PreviewState;
 
-	let p = format!("p{}", TW_PAD_W);
+	let p = format!("p{}", TW_PAD_S);
 	let state = consume_context::<Signal<PreviewState,>,>();
 	match state() {
 		PreviewState::Unset => rsx! { "hover over a story to preview it" },
@@ -45,7 +45,7 @@ pub fn preview() -> Element {
 
 #[component]
 fn comment(com: data::CommentData,) -> Element {
-	let p = format!("p{TW_PAD_W}");
+	let p = format!("p{TW_PAD_S}");
 	rsx! {
 		div { class: "{p}",
 			div { class: TW_GRAY, "by {com.by}" }

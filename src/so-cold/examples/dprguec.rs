@@ -14,23 +14,15 @@ fn main() {
 
 #[component]
 fn app() -> Element {
-	use_context_provider(|| Signal::new(None::<Rc<MountedData,>,>,),);
+	let sig = use_signal(|| None::<Rc<MountedData,>,>,);
+	let user = use_signal(|| entity::User::new(),);
+	use_context_provider(|| sig,);
+	use_context_provider(|| user,);
 	tracing::debug!("{}app", module_path!());
-	let mut x = 0;
-	let _ = async {
-		x = back::get_article(30,).await.expect("failed to get id",);
-	};
 
 	rsx! {
 		document::Stylesheet { href: asset!("./assets/tailwind.css") }
-		document::Title{ "original title" }
-		//div { {x.to_string()} }
-		front::title {}
-		front::logo {}
-		front::go_top {}
-
-		{(0..100).map(|i| rsx! {
-			front::article { ttl: "abc", body: "def", id: i }
-		})}
+		document::Title { "original title" }
+		Router::<front::Route>{}
 	}
 }
