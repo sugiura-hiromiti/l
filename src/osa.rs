@@ -1,7 +1,7 @@
-use mylibrary::sh_cmd;
+use crate::sh_cmd;
 const OSA_BIN: &str = "$HOME/.local/bin/";
 
-fn main() {
+fn osa() {
 	let mut arg = std::env::args();
 	arg.next();
 	let xec_nam = arg.next().unwrap();

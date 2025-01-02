@@ -100,6 +100,10 @@ impl User {
 		}
 	}
 
+	pub fn get_or_dflt(&self, s: impl AsRef<str,>,) -> String {
+		field_with_dflt(self.get(s,),)
+	}
+
 	pub fn db_insert(&self,) -> (String, String, String, String, String,) {
 		(
 			self.name.clone().unwrap(),
@@ -119,6 +123,9 @@ impl From<&HashMap<String, FormValue,>,> for User {
 			password: extract_field(value, "password",),
 		}
 	}
+}
+fn field_with_dflt<T: Clone + Default,>(o: &Option<T,>,) -> T {
+	(*o).clone().unwrap_or_default()
 }
 
 fn extract_field(hm: &HashMap<String, FormValue,>, s: impl AsRef<str,>,) -> Option<String,> {

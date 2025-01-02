@@ -1,10 +1,20 @@
 //! My custom Library of rust
+pub mod ac;
 pub mod algorithm;
 pub mod better;
+pub mod br_eng;
 pub mod cli;
-mod macros;
+pub mod exercice_css;
+pub mod exercise_html;
+pub mod exercise_js;
+pub mod exercise_rendering_tree;
+pub mod 	osa;
 pub mod sh;
 pub mod str;
+
+mod async_io;
+mod async_runtime;
+mod macros;
 
 #[allow(unused)]
 fn tmp() -> anyhow::Result<i32,> {

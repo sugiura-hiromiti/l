@@ -3,7 +3,7 @@
 [package]
 name = "l"
 version = "1.2.7"
-edition = "2021"
+edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 documentation = "https://github.com/sugiura-hiromichi/mylibrary"
@@ -14,4 +14,22 @@ repository = "https://github.com/sugiura-hiromichi/mylibrary"
 description = "my personal library"
 
 [dependencies]
-anyhow = "1.0.91"
+anyhow = "*"
+
+# ac
+clap = { version = "*", features = ["derive"] }
+proc-macro2 = "*"
+serde = { version = "*", features = ["derive"] }
+serde_json = "*"
+strum = "*"
+strum_macros = "*"
+syn = { version = "*", features = ["full"] }
+toml = { version = "*", features = ["parse"] }
+
+# async_io
+futures = { version = "*", features = ["thread-pool"] }
+
+combine = "*"
+cursive = "*"
+image = "*"
+rusty_v8 = "*"

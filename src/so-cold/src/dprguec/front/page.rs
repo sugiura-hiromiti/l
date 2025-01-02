@@ -1,9 +1,9 @@
 //! provides ui like page itself & routing
 
-use crate::*;
-use std::rc::Rc;
-
 use super::helper;
+use crate::*;
+use dprguec::front::Route;
+use std::rc::Rc;
 
 #[component]
 pub fn Entrypoint() -> Element {
@@ -26,7 +26,7 @@ pub fn Entrypoint() -> Element {
 #[component]
 pub fn PageNotFound(segments: Vec<String,>,) -> Element {
 	rsx! {
-	   div { class: TW_FONT_XL, "Page Not Found" }
+		div { class: TW_FONT_XL, "Page Not Found" }
 		br {}
 		{segments.into_iter().map(|s| rsx! {
 			{format!("/{s}")}
@@ -46,8 +46,15 @@ pub fn SignIn() -> Element {
 
 #[component]
 pub fn Header() -> Element {
+	let mut button_style = TW_BUTTON_COMMON.clone().to_vec();
+	button_style[1] = TW_PAD_S;
+	button_style.push(TW_FONT_L,);
+	let button_style = button_style.join(" ",);
 	rsx! {
-		div { "sidebar is currently implementing" }
+		div { id: id!(), class: "{TW_FLEX_ROW} {TW_REVERT_COLOR} w-full justify-between mb-10",
+			Link { id: id!(), class: button_style.clone(), to: Route::Home, " " }
+			Link { id: id!(), class: button_style, to: Route::Entrypoint, " " }
+		}
 		Outlet::<dprguec::front::Route> {}
 	}
 }

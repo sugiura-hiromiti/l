@@ -9,16 +9,16 @@
 //!   develping environment protocol)
 //! - [ ] 履歴機能の追加
 
-use anyhow::anyhow;
 use anyhow::Result;
+use anyhow::anyhow;
 use execution_detail::ProjectType;
 use project_manager::ProjectManager;
 use std::path::PathBuf;
 
-mod execution_detail;
-mod parser;
-mod project_manager;
-mod util {
+pub mod execution_detail;
+pub mod parser;
+pub mod project_manager;
+pub mod util {
 
 	#[derive(Debug,)]
 	pub struct Queue<T: Clone,> {
@@ -66,9 +66,13 @@ mod util {
 		///
 		/// `self`が何も含まない時パニックを起こします。`self.
 		/// is_empty`メソッドを使って都度確認しましょう。
-		pub fn peek(&self,) -> &T { unsafe { &(*self.head).as_ref().unwrap().val } }
+		pub fn peek(&self,) -> &T {
+			unsafe { &(*self.head).as_ref().unwrap().val }
+		}
 
-		pub fn is_empty(&self,) -> bool { unsafe { (*self.head).is_none() } }
+		pub fn is_empty(&self,) -> bool {
+			unsafe { (*self.head).is_none() }
+		}
 	}
 
 	#[derive(Clone, Debug,)]
@@ -78,7 +82,9 @@ mod util {
 	}
 
 	impl<T: Clone,> Node<T,> {
-		pub fn new(val: T,) -> Self { Self { val, next: None, } }
+		pub fn new(val: T,) -> Self {
+			Self { val, next: None, }
+		}
 	}
 
 	impl<T: Clone,> From<&[T],> for Node<T,> {
@@ -95,8 +101,8 @@ mod util {
 	}
 }
 
-/// 実際のコマンドの実行とエラー処理はこの`main`関数で行われます
-fn main() -> Result<(),> {
+/// 実際のコマンドの実行とエラー処理はこの`ac_main`関数で行われます
+fn ac_main() -> Result<(),> {
 	let pm = ProjectManager::init()?;
 
 	Err(anyhow!("this project is still imcomplete"),)
