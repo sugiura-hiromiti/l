@@ -244,6 +244,8 @@ mod tests {
 		// we do not need manually drop because previous call of `call_once` moves
 		// `closure_fn_outer`
 		// drop(closure_fn_outer,);
+
+		// closure can change environment!
 		assert_eq!(rep_3_s, s);
 	}
 }
