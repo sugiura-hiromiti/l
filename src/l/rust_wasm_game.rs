@@ -1,7 +1,7 @@
-mod game;
-//#[macro_use]
-mod browser;
-mod engine;
+pub mod game;
+pub mod browser;
+pub mod engine;
+
 use engine::GameLoop;
 use game::WalkTheDog;
 use wasm_bindgen::prelude::*;
