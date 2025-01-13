@@ -1,8 +1,8 @@
-use crate::execution_detail;
-use crate::parser;
-use crate::util;
-use anyhow::anyhow;
+use super::execution_detail;
+use super::parser;
+use super::util;
 use anyhow::Result;
+use anyhow::anyhow;
 use std::path::PathBuf;
 use strum::IntoEnumIterator;
 
@@ -298,7 +298,7 @@ impl ProjectManager {
 				// `cargo`コマンドがエントリポイントを検出するので何もしない
 				Cargo => None,
 				Rust => {
-					use crate::parser::rust;
+					use super::parser::rust;
 					let sources = self.lookdown(".rs",)?;
 					let mut rslt = None;
 					for fp in sources {
@@ -318,22 +318,22 @@ impl ProjectManager {
 				},
 				Just => todo!(),
 				DotFiles => todo!(),
-				Scheme | Lisp | Lua | TypeScript | C | CPP | Swift | Python => {
-					use execution_detail::Command::*;
-					let target = match self.cli.command.as_ref().unwrap() {
-						Run => todo!(),
-						Test => todo!(),
-						Fix => todo!(),
-						Init => todo!(),
-						New => todo!(),
-						Build => todo!(),
-						Upload => todo!(),
-						Open => todo!(),
-						Config => todo!(),
-						Install => todo!(),
-					};
-					Some(self.lookdown("main",)?[0],)
-				},
+				// Scheme | Lisp | Lua | TypeScript | C | CPP | Swift | Python => {
+				// 	use execution_detail::Command::*;
+				// 	let target = match self.cli.command.as_ref().unwrap() {
+				// 		Run => todo!(),
+				// 		Test => todo!(),
+				// 		Fix => todo!(),
+				// 		Init => todo!(),
+				// 		New => todo!(),
+				// 		Build => todo!(),
+				// 		Upload => todo!(),
+				// 		Open => todo!(),
+				// 		Config => todo!(),
+				// 		Install => todo!(),
+				// 	};
+				// 	Some(self.lookdown("main",)?[0],)
+				// },
 				// tarrget_file is required by open command. open by title, not slug
 				Zenn => todo!(),
 				Markdown => todo!(),
@@ -344,6 +344,10 @@ impl ProjectManager {
 				CPP => todo!(),
 				Swift => todo!(),
 				Python => todo!(),
+				Scheme => todo!(),
+				Lisp => todo!(),
+				Lua => todo!(),
+				TypeScript => todo!(),
 			}
 		}
 		Ok((),)
@@ -357,7 +361,9 @@ impl ProjectManager {
 pub struct ProjectManagerConfig {}
 
 impl ProjectManagerConfig {
-	pub fn load() -> Result<Self,> { todo!() }
+	pub fn load() -> Result<Self,> {
+		todo!()
+	}
 }
 
 #[cfg(test)]

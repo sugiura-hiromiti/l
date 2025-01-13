@@ -1,16 +1,15 @@
 //use anyhow::Result as Rslt;
 use futures::future::BoxFuture;
 use futures::future::FutureExt;
-use futures::task::waker_ref;
 use futures::task::ArcWake;
+use futures::task::waker_ref;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::mpsc::sync_channel;
-use std::sync::mpsc::Receiver;
-use std::sync::mpsc::SyncSender;
 use std::sync::Arc;
 use std::sync::Mutex;
-use std::sync::MutexGuard;
+use std::sync::mpsc::Receiver;
+use std::sync::mpsc::SyncSender;
+use std::sync::mpsc::sync_channel;
 use std::task::Context;
 use std::task::Poll;
 
@@ -28,10 +27,12 @@ impl Night {
 
 	fn print_state(&self,) {
 		let state = self.state_name();
-		mylibrary_::test_eprintln!("{state}");
+		crate::test_eprintln!("{state}");
 	}
 
-	fn state_name(&self,) -> String { self.state.as_ref().to_owned() }
+	fn state_name(&self,) -> String {
+		self.state.as_ref().to_owned()
+	}
 }
 
 impl Future for Night {
@@ -97,7 +98,9 @@ impl Executor {
 	}
 
 	// get spawner for generate new task
-	pub fn get_spawner(&self,) -> Spawner { Spawner { sender: self.sender.clone(), } }
+	pub fn get_spawner(&self,) -> Spawner {
+		Spawner { sender: self.sender.clone(), }
+	}
 
 	pub fn run(&self,) {
 		// execute a task send from spawner each time

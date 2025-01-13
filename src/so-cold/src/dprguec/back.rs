@@ -128,6 +128,12 @@ async fn new_email(email: String,) -> Result<bool, ServerFnError,> {
 	},)
 }
 
+#[server	(endpoint="all_user",input=GetUrl)]
+
+async fn all_user() -> Result<Vec<String,>, ServerFnError,> {
+	todo!()
+}
+
 #[cfg(feature = "server")]
 fn register_user(user: entity::User,) -> Result<(), ServerFnError,> {
 	CONNECTION.with(|db| {
@@ -147,7 +153,7 @@ fn register_user(user: entity::User,) -> Result<(), ServerFnError,> {
 }
 
 #[cfg(feature = "server")]
-fn find_user(user: entity::User,) -> Result<usize, ServerFnError,> {
+fn find_user(user: entity::User,) -> Result<String, ServerFnError,> {
 	let params: Vec<String,> = ["name", "email", "password",]
 		.into_iter()
 		.flat_map(|v| [v.to_string(), user.get_or_dflt(v,),],)
@@ -155,48 +161,43 @@ fn find_user(user: entity::User,) -> Result<usize, ServerFnError,> {
 	let query = format!(
 		"SELECT (?1, ?3, ?5) FROM user WHERE {}?3 = ?4 AND ?5 = ?6",
 		if params[2] == "".to_string() { "" } else { "?1 = ?2 AND " }
-	)
-	.as_str();
+	);
 
-	// query_then(query, params.as_slice().iter(), |rows| {
-	// 	pass_or_exit!(count, rows.count());
-	// 	if count == 0 {
-	// 		Err(ServerFnError::ServerError("no user match given info".to_string(),),)
-	// 	} else {
-	// 		Ok(count,)
-	// 	}
-	// },)
-	let count = query_count(query, params,)?;
-	if count == 0 {
-		Err(ServerFnError::ServerError("no user match given info".to_string(),),)
+	if query_count(&query, params.as_slice().iter(),)? == 1 {
+		query_then(query, params.as_slice().iter(), |mut rows| {
+			pass_or_exit!(wrapped_row, rows.next());
+			let row = wrapped_row.expect("all rows have been retrieved",);
+
+			pass_or_exit!(name, row.get("name"));
+			Ok(name,)
+		},)
 	} else {
-		Ok(count,)
+		Err(ServerFnError::ServerError(format!("expected one user, found more"),),)
 	}
 }
 
 #[cfg(feature = "server")]
 fn query_then<T, P,>(
-	q: &str,
+	q: impl AsRef<str,>,
 	params: P,
 	data_op: impl Fn(Rows,) -> Result<T, ServerFnError,>,
 ) -> Result<T, ServerFnError,>
 where
 	P: IntoIterator,
-	<P as Iterator>::Item: ToSql,
+	P::Item: ToSql,
 {
 	CONNECTION.with(|db| {
-		pass_or_exit!(mut stmt, db.prepare(q));
+		pass_or_exit!(mut stmt, db.prepare(q.as_ref()));
 		pass_or_exit!(rows, stmt.query(params_from_iter(params)));
 		data_op(rows,)
 	},)
 }
 
 #[cfg(feature = "server")]
-
-fn query_count<P,>(q: &str, params: P,) -> Result<usize, ServerFnError,>
+fn query_count<P,>(q: impl AsRef<str,>, params: P,) -> Result<usize, ServerFnError,>
 where
 	P: IntoIterator,
-	<P as Iterator>::Item: ToSql,
+	P::Item: ToSql,
 {
 	query_then(q, params, |rows| {
 		pass_or_exit!(count, rows.count());

@@ -8,8 +8,6 @@ pub mod style;
 
 use std::fs;
 
-use image;
-
 struct Parser {
 	pos: usize,
 	inp: String,
@@ -55,7 +53,7 @@ impl Parser {
 	}
 }
 
-fn main() {
+pub fn br_main() {
 	//read input files
 	let html_file = fs::read_to_string("examples/test.html",).unwrap();
 	let css_file = fs::read_to_string("examples/test.css",).unwrap();

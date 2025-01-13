@@ -1,4 +1,5 @@
 //! <https://browserbook.shift-js.info/chapters/parsing-html>
+
 pub mod css;
 pub mod dom;
 pub mod html;
@@ -7,6 +8,12 @@ pub mod layout;
 pub mod render;
 pub mod renderer;
 pub mod style;
+
+use dom::Node;
+use dom::NodeType;
+use layout::to_layout_box;
+use render::to_element_container;
+use style::to_styled_node;
 
 const HTML: &str = r#"<body>
     <p>hello</p>
@@ -48,7 +55,7 @@ pub fn collect_tag_inners(node: &Box<Node,>, tag_name: &str,) -> Vec<String,> {
 		.collect()
 }
 
-fn js_main() {
+pub fn js_main() {
 	let mut siv = cursive::default();
 
 	let node = html::parse(HTML,);

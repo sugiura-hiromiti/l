@@ -1,12 +1,20 @@
-use combine::{
-	choice,
-	error::StreamError,
-	many, many1, optional,
-	parser::char::{self, letter, newline, space},
-	sep_by, sep_end_by, ParseError, Parser, Stream,
-};
+use combine::ParseError;
+use combine::Parser;
+use combine::Stream;
+use combine::choice;
+use combine::error::StreamError;
+use combine::many;
+use combine::many1;
+use combine::optional;
+use combine::parser::char::letter;
+use combine::parser::char::newline;
+use combine::parser::char::space;
+use combine::parser::char::{self};
+use combine::sep_by;
+use combine::sep_end_by;
 
-use crate::dom::{Node, NodeType};
+use super::dom::Node;
+//use super::dom::NodeType;
 
 /// `Stylesheet` represents a single stylesheet.
 /// It consists of multiple rules, which are called "rule-list" in the standard (https://www.w3.org/TR/css-syntax-3/).
@@ -16,7 +24,9 @@ pub struct Stylesheet {
 }
 
 impl Stylesheet {
-	pub fn new(rules: Vec<Rule,>,) -> Self { Stylesheet { rules, } }
+	pub fn new(rules: Vec<Rule,>,) -> Self {
+		Stylesheet { rules, }
+	}
 }
 
 /// `Rule` represents a single CSS rule.
@@ -28,17 +38,16 @@ pub struct Rule {
 
 impl Rule {
 	pub fn matches(&self, n: &Box<Node,>,) -> bool {
-		self.selectors
-			.iter()
-			.any(|s| s.matches(n,),)
+		self.selectors.iter().any(|s| s.matches(n,),)
 	}
 }
 
 /// NOTE: This is not compliant to the standard for simplicity.
 ///
-/// In the standard, *a selector* is *a chain* of one or more sequences of simple selectors separated by combinators,
-/// where a sequence of simple selectors is a chain of simple selectors that are not separated by a combinator.
-/// Hence `Selector` is in fact something like `Vec<Vec<SimpleSelector>>`.
+/// In the standard, *a selector* is *a chain* of one or more sequences of simple selectors
+/// separated by combinators, where a sequence of simple selectors is a chain of simple selectors
+/// that are not separated by a combinator. Hence `Selector` is in fact something like
+/// `Vec<Vec<SimpleSelector>>`.
 pub type Selector = SimpleSelector;
 
 /// `SimpleSelector` represents a simple selector defined in the following standard:
@@ -63,7 +72,9 @@ pub enum SimpleSelector {
 }
 
 impl SimpleSelector {
-	pub fn matches(&self, n: &Box<Node,>,) -> bool { todo!("you need to implement this") }
+	pub fn matches(&self, _n: &Box<Node,>,) -> bool {
+		todo!("you need to implement this")
+	}
 }
 
 /// `AttributeSelectorOp` is an operator which is allowed to use.
@@ -95,10 +106,7 @@ pub enum CSSValue {
 }
 
 pub fn parse(raw: &str,) -> Stylesheet {
-	rules()
-		.parse(raw,)
-		.map(|(rules, _,)| Stylesheet::new(rules,),)
-		.unwrap()
+	rules().parse(raw,).map(|(rules, _,)| Stylesheet::new(rules,),).unwrap()
 }
 
 fn whitespaces<Input,>() -> impl Parser<Input, Output = String,>
@@ -114,11 +122,7 @@ where
 	Input: Stream<Token = char,>,
 	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
 {
-	(
-		whitespaces(),
-		many(rule().skip(whitespaces(),),),
-	)
-		.map(|(_, rules,)| rules,)
+	(whitespaces(), many(rule().skip(whitespaces(),),),).map(|(_, rules,)| rules,)
 }
 
 fn rule<Input,>() -> impl Parser<Input, Output = Rule,>
@@ -140,10 +144,7 @@ where
 	Input: Stream<Token = char,>,
 	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
 {
-	sep_by(
-		simple_selector().skip(whitespaces(),),
-		char::char(',',).skip(whitespaces(),),
-	)
+	sep_by(simple_selector().skip(whitespaces(),), char::char(',',).skip(whitespaces(),),)
 }
 
 fn simple_selector<Input,>() -> impl Parser<Input, Output = SimpleSelector,>
@@ -152,52 +153,39 @@ where
 	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
 {
 	let universal_selector = char::char('*',).map(|_| SimpleSelector::UniversalSelector,);
-	let class_selector = (
-		char::char('.',),
-		many1(letter(),),
-	)
+	let class_selector = (char::char('.',), many1(letter(),),)
 		.map(|(_, class_name,)| SimpleSelector::ClassSelector { class_name, },);
 	let type_or_attribute_selector = (
 		many1(letter(),).skip(whitespaces(),),
 		optional((
 			char::char('[',).skip(whitespaces(),),
 			many1(letter(),),
-			choice((
-				char::string("=",),
-				char::string("~=",),
-			),),
+			choice((char::string("=",), char::string("~=",),),),
 			many1(letter(),),
 			char::char(']',),
 		),),
 	)
-		.and_then(
-			|(tag_name, opts,)| match opts {
-				Some((_, attribute, op, value, _,),) => {
-					let op = match op {
-						"=" => AttributeSelectorOp::Eq,
-						"~=" => AttributeSelectorOp::Contain,
-						_ =>
-							return Err(
-								<Input::Error as combine::error::ParseError<
-									char,
-									Input::Range,
-									Input::Position,
-								>>::StreamError::message_static_message(
-									"invalid attribute selector op",
-								),
-							),
-					};
-					Ok(SimpleSelector::AttributeSelector { tag_name, attribute, op, value, },)
-				},
-				None => Ok(SimpleSelector::TypeSelector { tag_name, },),
+		.and_then(|(tag_name, opts,)| match opts {
+			Some((_, attribute, op, value, _,),) => {
+				let op = match op {
+					"=" => AttributeSelectorOp::Eq,
+					"~=" => AttributeSelectorOp::Contain,
+					_ => {
+						return Err(<Input::Error as combine::error::ParseError<
+							char,
+							Input::Range,
+							Input::Position,
+						>>::StreamError::message_static_message(
+							"invalid attribute selector op",
+						),);
+					},
+				};
+				Ok(SimpleSelector::AttributeSelector { tag_name, attribute, op, value, },)
 			},
-		);
+			None => Ok(SimpleSelector::TypeSelector { tag_name, },),
+		},);
 
-	choice((
-		universal_selector,
-		class_selector,
-		type_or_attribute_selector,
-	),)
+	choice((universal_selector, class_selector, type_or_attribute_selector,),)
 }
 
 fn declarations<Input,>() -> impl Parser<Input, Output = Vec<Declaration,>,>
@@ -205,10 +193,7 @@ where
 	Input: Stream<Token = char,>,
 	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
 {
-	sep_end_by(
-		declaration().skip(whitespaces(),),
-		char::char(';',).skip(whitespaces(),),
-	)
+	sep_end_by(declaration().skip(whitespaces(),), char::char(';',).skip(whitespaces(),),)
 }
 
 fn declaration<Input,>() -> impl Parser<Input, Output = Declaration,>
@@ -216,11 +201,7 @@ where
 	Input: Stream<Token = char,>,
 	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
 {
-	(
-		many1(letter(),).skip(whitespaces(),),
-		char::char(':',).skip(whitespaces(),),
-		css_value(),
-	)
+	(many1(letter(),).skip(whitespaces(),), char::char(':',).skip(whitespaces(),), css_value(),)
 		.map(|(k, _, v,)| Declaration { name: k, value: v, },)
 }
 
@@ -235,7 +216,7 @@ where
 
 #[cfg(test)]
 mod tests {
-	use crate::dom::Element;
+	use super::super::dom::Element;
 
 	use super::*;
 
@@ -387,20 +368,11 @@ mod tests {
 
 	#[test]
 	fn test_simple_selector() {
-		assert_eq!(
-			simple_selector().parse("*"),
-			Ok((
-				SimpleSelector::UniversalSelector,
-				""
-			))
-		);
+		assert_eq!(simple_selector().parse("*"), Ok((SimpleSelector::UniversalSelector, "")));
 
 		assert_eq!(
 			simple_selector().parse("test"),
-			Ok((
-				SimpleSelector::TypeSelector { tag_name: "test".to_string(), },
-				""
-			))
+			Ok((SimpleSelector::TypeSelector { tag_name: "test".to_string(), }, ""))
 		);
 
 		assert_eq!(
@@ -418,10 +390,7 @@ mod tests {
 
 		assert_eq!(
 			simple_selector().parse(".test"),
-			Ok((
-				SimpleSelector::ClassSelector { class_name: "test".to_string(), },
-				""
-			))
+			Ok((SimpleSelector::ClassSelector { class_name: "test".to_string(), }, ""))
 		);
 	}
 
@@ -460,9 +429,7 @@ mod tests {
 			))
 		);
 
-		assert!(declaration()
-			.parse("aaaaa")
-			.is_err())
+		assert!(declaration().parse("aaaaa").is_err())
 	}
 
 	#[test]
@@ -470,24 +437,15 @@ mod tests {
 		let e = &Element::new(
 			"p".to_string(),
 			[
-				(
-					"id".to_string(),
-					"test".to_string(),
-				),
-				(
-					"class".to_string(),
-					"testclass".to_string(),
-				),
+				("id".to_string(), "test".to_string(),),
+				("class".to_string(), "testclass".to_string(),),
 			]
 			.iter()
 			.cloned()
 			.collect(),
 			vec![],
 		);
-		assert_eq!(
-			SimpleSelector::UniversalSelector.matches(e),
-			true
-		);
+		assert_eq!(SimpleSelector::UniversalSelector.matches(e), true);
 	}
 
 	#[test]
@@ -495,14 +453,8 @@ mod tests {
 		let e = &Element::new(
 			"p".to_string(),
 			[
-				(
-					"id".to_string(),
-					"test".to_string(),
-				),
-				(
-					"class".to_string(),
-					"testclass".to_string(),
-				),
+				("id".to_string(), "test".to_string(),),
+				("class".to_string(), "testclass".to_string(),),
 			]
 			.iter()
 			.cloned()
@@ -510,10 +462,7 @@ mod tests {
 			vec![],
 		);
 
-		assert_eq!(
-			(SimpleSelector::TypeSelector { tag_name: "p".into(), }).matches(e),
-			true
-		);
+		assert_eq!((SimpleSelector::TypeSelector { tag_name: "p".into(), }).matches(e), true);
 
 		assert_eq!(
 			(SimpleSelector::TypeSelector { tag_name: "invalid".into(), }).matches(e),
@@ -526,14 +475,8 @@ mod tests {
 		let e = &Element::new(
 			"p".to_string(),
 			[
-				(
-					"id".to_string(),
-					"test".to_string(),
-				),
-				(
-					"class".to_string(),
-					"testclass".to_string(),
-				),
+				("id".to_string(), "test".to_string(),),
+				("class".to_string(), "testclass".to_string(),),
 			]
 			.iter()
 			.cloned()
@@ -591,14 +534,8 @@ mod tests {
 		let e = &Element::new(
 			"p".to_string(),
 			[
-				(
-					"id".to_string(),
-					"test".to_string(),
-				),
-				(
-					"class".to_string(),
-					"testclass".to_string(),
-				),
+				("id".to_string(), "test".to_string(),),
+				("class".to_string(), "testclass".to_string(),),
 			]
 			.iter()
 			.cloned()

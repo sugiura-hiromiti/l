@@ -1,4 +1,3 @@
-#![feature(pattern, never_type, file_buffered)]
 #![allow(dead_code, unused_imports, unused_variables, unreachable_code)]
 //! # TODO:
 //! - [ ] AI機能の追加

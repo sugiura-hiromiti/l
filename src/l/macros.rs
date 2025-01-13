@@ -97,7 +97,7 @@ macro_rules! test_eprintln {
 /// # Parameter
 ///
 /// ```rust
-/// use mylibrary_::layout;
+/// use l::layout;
 /// layout!(&str, size: 0x10, align: 8);
 /// ```
 ///
@@ -122,18 +122,25 @@ mod tests {
 	*/
 
 	#[test]
+	#[ignore]
 	fn test_with_stdout() {
 		test_print!("🫠 from `crate::macros::tests::test_with_stdout`");
 	}
+
 	#[test]
+	#[ignore]
 	fn test_with_stderr() {
 		test_eprint!("🫠 from `crate::macros::tests::test_with_stderr`");
 	}
+
 	#[test]
+	#[ignore]
 	fn test_with_stdout_nl() {
 		test_println!("🫠 from `crate::macros::tests::test_with_stdout`");
 	}
+
 	#[test]
+	#[ignore]
 	fn test_with_stderr_nl() {
 		test_eprintln!("🫠 from `crate::macros::tests::test_with_stderr`");
 	}

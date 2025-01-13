@@ -1,12 +1,7 @@
 //! My custom Library of rust
-pub mod ac;
-pub mod better;
-pub mod br_eng;
-pub mod br_exercise;
-pub mod l;
+#![feature(pattern, never_type, file_buffered, iterator_try_collect)]
 
-mod async_io;
-mod async_runtime;
+pub mod l;
 
 #[allow(unused)]
 fn tmp() -> anyhow::Result<i32,> {
@@ -26,7 +21,7 @@ mod tests {
 
 	#[test]
 	fn algo_palindrome() {
-		assert_eq!(algorithm::longest_palindrome("ahy".to_string()), "a".to_string());
-		assert_eq!(algorithm::longest_palindrome("(0v0)".to_string()), "0v0".to_string());
+		assert_eq!(l::algorithm::longest_palindrome("ahy".to_string()), "a".to_string());
+		assert_eq!(l::algorithm::longest_palindrome("(0v0)".to_string()), "0v0".to_string());
 	}
 }

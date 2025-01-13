@@ -54,7 +54,7 @@ mod tests {
 	#[test]
 	fn executor() -> Rslt<(),> {
 		let pool = ThreadPool::new()?;
-		let future = async { mylibrary_::test_println!("good night") };
+		let future = async { crate::test_println!("good night") };
 		pool.spawn_ok(future,);
 		Ok((),)
 	}
@@ -68,7 +68,7 @@ mod tests {
 		// schedule the future on the thread pool
 		pool.spawn_ok(async {
 			let rslt = io_op.await;
-			mylibrary_::test_println!("Rslt: {rslt}");
+			crate::test_println!("Rslt: {rslt}");
 		},);
 
 		simulate_io_event_loop(shared_shate,);

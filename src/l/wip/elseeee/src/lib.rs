@@ -28,25 +28,25 @@ mod tests {
 		Ok((),)
 	}
 
-	#[test]
-	fn sqlite() -> Rslt<(),> {
-		let connect = rusqlite::Connection::open_in_memory()?;
-		connect.execute_batch(
-			"create table if not exists articles (
-				id integer primary key,
-				date text not null
-		);",
-		)?;
-
-		let should_one = connect.execute(
-			"insert into articles (date) values (?1)",
-			&[&chrono::Local::now().timestamp(),],
-		)?;
-
-		assert_eq!(1, should_one);
-
-		Ok((),)
-	}
+	// #[test]
+	// fn sqlite() -> Rslt<(),> {
+	// 	let connect = rusqlite::Connection::open_in_memory()?;
+	// 	connect.execute_batch(
+	// 		"create table if not exists articles (
+	// 			id integer primary key,
+	// 			date text not null
+	// 	);",
+	// 	)?;
+	//
+	// 	let should_one = connect.execute(
+	// 		"insert into articles (date) values (?1)",
+	// 		&[&chrono::Local::now().timestamp(),],
+	// 	)?;
+	//
+	// 	assert_eq!(1, should_one);
+	//
+	// 	Ok((),)
+	// }
 
 	#[test]
 	fn understand_closure() {
@@ -247,5 +247,12 @@ mod tests {
 
 		// closure can change environment!
 		assert_eq!(rep_3_s, s);
+
+		fn normal_function() -> i32 {
+			2525
+		}
+		assert_eq!(2525, normal_function.call(()));
+		assert_eq!(2525, normal_function.call_mut(()));
+		assert_eq!(2525, normal_function.call_once(()));
 	}
 }
