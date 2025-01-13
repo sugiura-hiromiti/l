@@ -121,7 +121,9 @@ pub enum ProjectType {
 }
 
 impl ProjectType {
-	pub fn valid_commands(&self,) -> Vec<Command,> { todo!() }
+	pub fn valid_commands(&self,) -> Vec<Command,> {
+		todo!()
+	}
 
 	pub fn binary(&self,) -> &str {
 		use ProjectType::*;

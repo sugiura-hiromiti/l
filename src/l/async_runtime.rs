@@ -17,6 +17,12 @@ pub struct Night {
 	state: StateNight,
 }
 
+impl Default for Night {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
 impl Night {
 	pub fn new() -> Self {
 		Night {
@@ -40,16 +46,16 @@ impl Future for Night {
 
 	fn poll(mut self: Pin<&mut Self,>, cx: &mut Context<'_,>,) -> std::task::Poll<Self::Output,> {
 		use StateNight::*;
-		match (*self).state {
+		match self.state {
 			Early => {
 				(*self).print_state();
-				(*self).state = Late;
+				self.state = Late;
 				cx.waker().wake_by_ref();
 				Poll::Pending
 			},
 			Late => {
 				(*self).print_state();
-				(*self).state = Mid;
+				self.state = Mid;
 				cx.waker().wake_by_ref();
 				Poll::Pending
 			},
@@ -88,6 +94,12 @@ pub struct Executor {
 	// execution queue
 	sender:   SyncSender<Arc<Task,>,>,
 	receiver: Receiver<Arc<Task,>,>,
+}
+
+impl Default for Executor {
+	fn default() -> Self {
+		Self::new()
+	}
 }
 
 impl Executor {

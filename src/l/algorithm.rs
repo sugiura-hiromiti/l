@@ -69,8 +69,8 @@ pub fn regex_match(s: String, p: String,) -> bool {
 		return s.is_empty();
 	}
 
-	let first_match = !s.is_empty()
-		&& (p.chars().nth(0,) == s.chars().nth(0,) || p.chars().nth(0,) == Some('.',));
+	let first_match =
+		!s.is_empty() && (p.chars().next() == s.chars().next() || p.starts_with('.',));
 
 	if p.len() >= 2 && p.chars().nth(1,) == Some('*',) {
 		regex_match(s.clone(), p[2..].to_string(),)

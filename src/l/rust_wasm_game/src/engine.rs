@@ -7,8 +7,8 @@ use std::sync::Mutex;
 use crate::browser;
 use crate::browser::LoopClosure;
 use crate::log;
-use anyhow::anyhow;
 use anyhow::Result;
+use anyhow::anyhow;
 use futures::channel::mpsc::UnboundedReceiver;
 use futures::channel::oneshot;
 use wasm_bindgen::JsCast;
@@ -33,19 +33,12 @@ pub struct Renderer {
 
 impl Renderer {
 	pub fn clear(&self, rct: &Rect,) {
-		self.context.clear_rect(
-			rct.x.into(),
-			rct.y.into(),
-			rct.w.into(),
-			rct.h.into(),
-		);
+		self.context.clear_rect(rct.x.into(), rct.y.into(), rct.w.into(), rct.h.into(),);
 	}
 
-	pub fn draw_image(
-		&self, img: &HtmlImageElement, frame: &Rect, dst: &Rect,
-	) {
-		self.context.
-			draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
+	pub fn draw_image(&self, img: &HtmlImageElement, frame: &Rect, dst: &Rect,) {
+		self.context
+			.draw_image_with_html_image_element_and_sw_and_sh_and_dx_and_dy_and_dw_and_dh(
 				&img,
 				frame.x.into(),
 				frame.y.into(),
@@ -54,9 +47,9 @@ impl Renderer {
 				dst.x.into(),
 				dst.y.into(),
 				dst.w.into(),
-				dst.h.into()
-				)
-			.expect("Drawing is throwing exceptions! Unrecoverable error");
+				dst.h.into(),
+			)
+			.expect("Drawing is throwing exceptions! Unrecoverable error",);
 	}
 }
 
@@ -77,7 +70,9 @@ pub(crate) struct KeyState {
 }
 
 impl KeyState {
-	fn new() -> Self { KeyState { pressed: HashMap::new(), } }
+	fn new() -> Self {
+		KeyState { pressed: HashMap::new(), }
+	}
 
 	pub fn is_pressed(&self, code: &str,) -> bool {
 		self.pressed.iter().for_each(|(key, val,)| {
@@ -101,30 +96,25 @@ impl GameLoop {
 	pub async fn start(mut game: impl Game + 'static,) -> Result<(),> {
 		let mut keyevent_rx = prepare_input()?;
 		game.init().await;
-		let mut game_loop = GameLoop {
-			last_frame:        browser::now()?,
-			accumulated_delta: 0.0,
-		};
+		let mut game_loop = GameLoop { last_frame: browser::now()?, accumulated_delta: 0.0, };
 		let rndrr = Renderer { context: browser::context()?, };
 
 		let f: SharedLoopClosure = Rc::new(RefCell::new(None,),);
 		let g = f.clone();
 
 		let mut keystat = KeyState::new();
-		*g.as_ref().borrow_mut() =
-			Some(browser::create_raf_closure(move |perf| {
-				process_input(&mut keystat, &mut keyevent_rx,);
-				game_loop.accumulated_delta +=
-					(perf - game_loop.last_frame) as f32;
-				while game_loop.accumulated_delta > FRAME_SIZE {
-					game.update(&keystat,);
-					game_loop.accumulated_delta -= FRAME_SIZE;
-				}
-				game_loop.last_frame = perf;
-				game.draw(&rndrr,);
+		*g.as_ref().borrow_mut() = Some(browser::create_raf_closure(move |perf| {
+			process_input(&mut keystat, &mut keyevent_rx,);
+			game_loop.accumulated_delta += (perf - game_loop.last_frame) as f32;
+			while game_loop.accumulated_delta > FRAME_SIZE {
+				game.update(&keystat,);
+				game_loop.accumulated_delta -= FRAME_SIZE;
+			}
+			game_loop.last_frame = perf;
+			game.draw(&rndrr,);
 
-				browser::req_anim_frame(&f.as_ref().borrow().as_ref().unwrap(),);
-			},),);
+			browser::req_anim_frame(&f.as_ref().borrow().as_ref().unwrap(),);
+		},),);
 
 		browser::req_anim_frame(
 			g.as_ref().borrow_mut().as_ref().expect("GameLoop: Loop is None",),
@@ -146,16 +136,12 @@ pub async fn load_img(src: &str,) -> Result<HtmlImageElement,> {
 	let error_tx = Rc::clone(&success_tx,);
 
 	let success_callback = browser::closure_once(move || {
-		if let Some(success_tx,) =
-			success_tx.lock().ok().and_then(|mut opt| opt.take(),)
-		{
+		if let Some(success_tx,) = success_tx.lock().ok().and_then(|mut opt| opt.take(),) {
 			success_tx.send(Ok((),),);
 		}
 	},);
 	let error_callback = browser::closure_once(move |e: JsValue| {
-		if let Some(error_tx,) =
-			error_tx.lock().ok().and_then(|mut opt| opt.take(),)
-		{
+		if let Some(error_tx,) = error_tx.lock().ok().and_then(|mut opt| opt.take(),) {
 			error_tx.send(Err(anyhow!("Error Loading Image: {:#?}", e),),);
 		}
 	},);
@@ -168,39 +154,28 @@ pub async fn load_img(src: &str,) -> Result<HtmlImageElement,> {
 	Ok(img,)
 }
 
-fn prepare_input(
-) -> Result<futures::channel::mpsc::UnboundedReceiver<KeyPress,>,> {
+fn prepare_input() -> Result<futures::channel::mpsc::UnboundedReceiver<KeyPress,>,> {
 	let (keyevent_tx, keyevent_rx,) = futures::channel::mpsc::unbounded();
 
 	// TODO: `Mutex` doesnt required?
 	let keydown_tx = Rc::new(RefCell::new(keyevent_tx,),);
 	let keyup_tx = keydown_tx.clone();
 
-	let onkey_down = browser::closure_wrap(Box::new(
-		move |keycode: web_sys::KeyboardEvent| {
-			keydown_tx.borrow_mut().start_send(KeyPress::KeyDown(keycode,),);
-		},
-	)
-		as Box<dyn FnMut(web_sys::KeyboardEvent,),>,);
-	let onkey_up = browser::closure_wrap(Box::new(
-		move |keycode: web_sys::KeyboardEvent| {
-			keyup_tx.borrow_mut().start_send(KeyPress::KeyUp(keycode,),);
-		},
-	)
-		as Box<dyn FnMut(web_sys::KeyboardEvent,),>,);
+	let onkey_down = browser::closure_wrap(Box::new(move |keycode: web_sys::KeyboardEvent| {
+		keydown_tx.borrow_mut().start_send(KeyPress::KeyDown(keycode,),);
+	},) as Box<dyn FnMut(web_sys::KeyboardEvent,),>,);
+	let onkey_up = browser::closure_wrap(Box::new(move |keycode: web_sys::KeyboardEvent| {
+		keyup_tx.borrow_mut().start_send(KeyPress::KeyUp(keycode,),);
+	},) as Box<dyn FnMut(web_sys::KeyboardEvent,),>,);
 
-	browser::window()?
-		.set_onkeydown(Some(onkey_down.as_ref().unchecked_ref(),),);
+	browser::window()?.set_onkeydown(Some(onkey_down.as_ref().unchecked_ref(),),);
 	browser::window()?.set_onkeyup(Some(onkey_up.as_ref().unchecked_ref(),),);
 	onkey_down.forget();
 	onkey_up.forget();
 	Ok(keyevent_rx,)
 }
 
-fn process_input(
-	stat: &mut KeyState,
-	keyevent_rx: &mut UnboundedReceiver<KeyPress,>,
-) {
+fn process_input(stat: &mut KeyState, keyevent_rx: &mut UnboundedReceiver<KeyPress,>,) {
 	loop {
 		match keyevent_rx.try_next() {
 			Ok(None,) | Err(_,) => break,

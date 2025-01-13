@@ -15,10 +15,10 @@ use sorted::sorted;
 
 #[sorted]
 pub enum Error {
-    ThatFailed,
-    ThisFailed,
-    SomethingFailed,
-    WhoKnowsWhatFailed,
+	ThatFailed,
+	ThisFailed,
+	SomethingFailed,
+	WhoKnowsWhatFailed,
 }
 
 fn main() {}

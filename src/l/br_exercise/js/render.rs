@@ -16,7 +16,7 @@ pub fn new_element_container() -> ElementContainer {
 	(DummyView {}).into_boxed_view()
 }
 
-pub fn to_element_container<'a,>(layout: LayoutBox<'a,>,) -> ElementContainer {
+pub fn to_element_container(layout: LayoutBox<'_,>,) -> ElementContainer {
 	match layout.box_type {
 		BoxType::BlockBox(p,) | BoxType::InlineBox(p,) => match p {
 			BoxProps { node_type: NodeType::Element(element,), .. } => {
@@ -38,7 +38,7 @@ pub fn to_element_container<'a,>(layout: LayoutBox<'a,>,) -> ElementContainer {
 				let text_to_display = t.data.clone();
 				let text_to_display = text_to_display.replace("\n", "",);
 				let text_to_display = text_to_display.trim();
-				if text_to_display != "" {
+				if !text_to_display.is_empty() {
 					TextView::new(text_to_display,).into_boxed_view()
 				} else {
 					(DummyView {}).into_boxed_view()

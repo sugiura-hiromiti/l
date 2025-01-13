@@ -4,8 +4,7 @@ struct Solution;
 // NOTE: ideas
 // 1. emulate scramble & find out we actually get s2(bit tree)
 // 2. determine scrambling possibility by indices of chars of s1 & s2
-// 3. insert splitter(represent as `|` here) and emulate scramble with splitter
-//    rule
+// 3. insert splitter(represent as `|` here) and emulate scramble with splitter rule
 // 4. 漸化式作れないか？
 type CharMap = std::collections::HashMap<char, Vec<usize,>,>;
 impl Solution {
@@ -71,16 +70,14 @@ mod tests {
 	#[test]
 	fn test_1() {
 		let ans = true;
-		let sol =
-			Solution::is_scramble("great".to_owned(), "rgeat".to_owned(),);
+		let sol = Solution::is_scramble("great".to_owned(), "rgeat".to_owned(),);
 		assert_eq!(ans, sol);
 	}
 
 	#[test]
 	fn test_2() {
 		let ans = false;
-		let sol =
-			Solution::is_scramble("abcde".to_string(), "caebd".to_string(),);
+		let sol = Solution::is_scramble("abcde".to_string(), "caebd".to_string(),);
 		assert_eq!(ans, sol);
 	}
 

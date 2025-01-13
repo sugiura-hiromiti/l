@@ -9,32 +9,26 @@
 //
 // Resources:
 //
-//   - Representation of generics in the Syn syntax tree:
-//     https://docs.rs/syn/2.0/syn/struct.Generics.html
+//   - Representation of generics in the Syn syntax tree: https://docs.rs/syn/2.0/syn/struct.Generics.html
 //
-//   - A helper for placing generics into an impl signature:
-//     https://docs.rs/syn/2.0/syn/struct.Generics.html#method.split_for_impl
+//   - A helper for placing generics into an impl signature: https://docs.rs/syn/2.0/syn/struct.Generics.html#method.split_for_impl
 //
-//   - Example code from Syn which deals with type parameters:
-//     https://github.com/dtolnay/syn/tree/master/examples/heapsize
+//   - Example code from Syn which deals with type parameters: https://github.com/dtolnay/syn/tree/master/examples/heapsize
 
 use derive_debug::CustomDebug;
 
-#[derive(CustomDebug)]
-pub struct Field<T> {
-    value: T,
-    #[debug = "0b{:08b}"]
-    bitmask: u8,
+#[derive(CustomDebug,)]
+pub struct Field<T,> {
+	value:   T,
+	#[debug = "0b{:08b}"]
+	bitmask: u8,
 }
 
 fn main() {
-    let f = Field {
-        value: "F",
-        bitmask: 0b00011100,
-    };
+	let f = Field { value: "F", bitmask: 0b00011100, };
 
-    let debug = format!("{:?}", f);
-    let expected = r#"Field { value: "F", bitmask: 0b00011100 }"#;
+	let debug = format!("{:?}", f);
+	let expected = r#"Field { value: "F", bitmask: 0b00011100 }"#;
 
-    assert_eq!(debug, expected);
+	assert_eq!(debug, expected);
 }

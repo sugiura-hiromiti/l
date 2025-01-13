@@ -26,19 +26,16 @@ impl Canvas {
 
 	///Here, we just paint a rectangler
 	fn paint_item(&mut self, item: &DisplayCommand,) {
-		match &item {
-			&DisplayCommand::SolidColor(color, rct,) => {
-				let x0 = rct.x.clamp(0.0, self.width as f64,) as usize;
-				let y0 = rct.y.clamp(0.0, self.height as f64,) as usize;
-				let x1 = (rct.x + rct.width).clamp(0.0, self.width as f64,) as usize;
-				let y1 = (rct.y + rct.height).clamp(0.0, self.height as f64,) as usize;
-				for y in y0..y1 {
-					for x in x0..x1 {
-						self.pixels[x + y * self.width] = color.clone();
-					}
+		if let &DisplayCommand::SolidColor(color, rct,) = &item {
+			let x0 = rct.x.clamp(0.0, self.width as f64,) as usize;
+			let y0 = rct.y.clamp(0.0, self.height as f64,) as usize;
+			let x1 = (rct.x + rct.width).clamp(0.0, self.width as f64,) as usize;
+			let y1 = (rct.y + rct.height).clamp(0.0, self.height as f64,) as usize;
+			for y in y0..y1 {
+				for x in x0..x1 {
+					self.pixels[x + y * self.width] = color.clone();
 				}
-			},
-			_ => {},
+			}
 		}
 	}
 }
@@ -62,9 +59,9 @@ fn render_layout_box(list: &mut DisplayList, layout_box: &layout::LayoutBox,) {
 
 ///Render background. If bg color isn't specified, transparent
 fn render_bg(list: &mut DisplayList, layout_box: &layout::LayoutBox,) {
-	get_color(layout_box, "background",).map(|clr| {
+	if let Some(clr,) = get_color(layout_box, "background",) {
 		list.push(DisplayCommand::SolidColor(clr, layout_box.dimensions.border_box(),),)
-	},);
+	}
 }
 
 ///If AnonymousBlock or not specified color, return None. Else, return

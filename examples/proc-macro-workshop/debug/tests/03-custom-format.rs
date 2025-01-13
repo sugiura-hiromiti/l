@@ -15,29 +15,24 @@
 //
 // Resources:
 //
-//   - Relevant syntax tree type:
-//     https://docs.rs/syn/2.0/syn/struct.Attribute.html
+//   - Relevant syntax tree type: https://docs.rs/syn/2.0/syn/struct.Attribute.html
 //
-//   - Macro for applying a format string to some runtime value:
-//     https://doc.rust-lang.org/std/macro.format_args.html
+//   - Macro for applying a format string to some runtime value: https://doc.rust-lang.org/std/macro.format_args.html
 
 use derive_debug::CustomDebug;
 
-#[derive(CustomDebug)]
+#[derive(CustomDebug,)]
 pub struct Field {
-    name: &'static str,
-    #[debug = "0b{:08b}"]
-    bitmask: u8,
+	name:    &'static str,
+	#[debug = "0b{:08b}"]
+	bitmask: u8,
 }
 
 fn main() {
-    let f = Field {
-        name: "F",
-        bitmask: 0b00011100,
-    };
+	let f = Field { name: "F", bitmask: 0b00011100, };
 
-    let debug = format!("{:?}", f);
-    let expected = r#"Field { name: "F", bitmask: 0b00011100 }"#;
+	let debug = format!("{:?}", f);
+	let expected = r#"Field { name: "F", bitmask: 0b00011100 }"#;
 
-    assert_eq!(debug, expected);
+	assert_eq!(debug, expected);
 }

@@ -32,7 +32,7 @@ fn spsk(
 		drw_tri(&context, color, a, b, c,);
 
 		let rng = 0..255;
-		let gen = |range: Range<i32,>| -> (u8, u8, u8,) {
+		let generate = |range: Range<i32,>| -> (u8, u8, u8,) {
 			let mut rng = thread_rng();
 			(
 				rng.gen_range(range.clone(),).try_into().unwrap(),
@@ -40,7 +40,7 @@ fn spsk(
 				rng.gen_range(range,).try_into().unwrap(),
 			)
 		};
-		let n_color = gen(rng,);
+		let n_color = generate(rng,);
 		let n_a = ((a.0 + b.0) / 2.0, (a.1 + b.1) / 2.0,);
 		let n_b = ((c.0 + b.0) / 2.0, (c.1 + b.1) / 2.0,);
 		let n_c = ((c.0 + a.0) / 2.0, (c.1 + a.1) / 2.0,);

@@ -54,7 +54,7 @@ pub fn experiment_exit_code(min: i32, max: i32,) -> Rslt<Vec<i32,>,> {
 			// run executable
 			std::process::Command::new(path_executable,)
 				.status()
-				.expect(&format!("execution of `{path_executable}` has failed"),)
+				.unwrap_or_else(|_| panic!("execution of `{path_executable}` has failed"),)
 				.code()
 				.expect("process terminated by signal",)
 		} else {

@@ -52,10 +52,10 @@ type D = B23;
 
 #[bitfield]
 pub struct NotQuiteFourBytes {
-    a: A,
-    b: B,
-    c: C,
-    d: D,
+	a: A,
+	b: B,
+	c: C,
+	d: D,
 }
 
 fn main() {}

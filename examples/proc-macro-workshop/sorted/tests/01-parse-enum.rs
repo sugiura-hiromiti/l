@@ -22,21 +22,19 @@
 //
 // Resources:
 //
-//   - The Syn crate for parsing procedural macro input:
-//     https://github.com/dtolnay/syn
+//   - The Syn crate for parsing procedural macro input: https://github.com/dtolnay/syn
 //
-//   - The syn::Item type which represents a parsed enum as a syntax tree:
-//     https://docs.rs/syn/2.0/syn/enum.Item.html
+//   - The syn::Item type which represents a parsed enum as a syntax tree: https://docs.rs/syn/2.0/syn/enum.Item.html
 
 use sorted::sorted;
 
 #[sorted]
 pub enum Conference {
-    RustBeltRust,
-    RustConf,
-    RustFest,
-    RustLatam,
-    RustRush,
+	RustBeltRust,
+	RustConf,
+	RustFest,
+	RustLatam,
+	RustRush,
 }
 
 fn main() {}

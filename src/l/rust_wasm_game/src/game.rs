@@ -18,7 +18,9 @@ pub struct WalkTheDog {
 }
 
 impl WalkTheDog {
-	pub fn new() -> Self { WalkTheDog { rhb: None, } }
+	pub fn new() -> Self {
+		WalkTheDog { rhb: None, }
+	}
 }
 
 impl Game for WalkTheDog {
@@ -50,7 +52,9 @@ impl Game for WalkTheDog {
 		self.rhb.as_mut().unwrap().update();
 	}
 
-	fn draw(&self, rndr: &Renderer,) { self.rhb.as_ref().unwrap().draw(rndr,); }
+	fn draw(&self, rndr: &Renderer,) {
+		self.rhb.as_ref().unwrap().draw(rndr,);
+	}
 }
 
 #[derive(Deserialize, Clone,)]
@@ -92,11 +96,7 @@ impl RedHatBoy {
 			self.state_machine.frame_name(),
 			(self.state_machine.context().frame / 3) + 1,
 		);
-		let sprite = self
-			.sprite_sheet
-			.frames
-			.get(&frame_name,)
-			.expect("Cell not found",);
+		let sprite = self.sprite_sheet.frames.get(&frame_name,).expect("Cell not found",);
 
 		let frame = &Rect {
 			x: sprite.frame.x.into(),
@@ -106,20 +106,18 @@ impl RedHatBoy {
 		};
 
 		renderer.clear(frame,);
-		renderer.draw_image(
-			&self.image,
-			frame,
-			&Rect {
-				x: self.state_machine.context().position.x.into(),
-				y: self.state_machine.context().position.y.into(),
-				w: sprite.frame.w.into(),
-				h: sprite.frame.h.into(),
-			},
-		);
+		renderer.draw_image(&self.image, frame, &Rect {
+			x: self.state_machine.context().position.x.into(),
+			y: self.state_machine.context().position.y.into(),
+			w: sprite.frame.w.into(),
+			h: sprite.frame.h.into(),
+		},);
 		renderer.clear(frame,);
 	}
 
-	fn update(&mut self,) { self.state_machine = self.state_machine.update(); }
+	fn update(&mut self,) {
+		self.state_machine = self.state_machine.update();
+	}
 
 	fn run_right(&mut self,) {
 		self.state_machine = self.state_machine.transition(Event::Run,);
@@ -142,9 +140,7 @@ impl From<RedHatBoyState<Running,>,> for RedHatBoyStateMachine {
 impl RedHatBoyStateMachine {
 	fn transition(self, event: Event,) -> Self {
 		match (self, event,) {
-			(RedHatBoyStateMachine::Idle(state,), Event::Run,) => {
-				state.run().into()
-			},
+			(RedHatBoyStateMachine::Idle(state,), Event::Run,) => state.run().into(),
 			_ => self,
 		}
 	}
@@ -197,7 +193,9 @@ mod red_hat_boy_states {
 		_state:  S,
 	}
 	impl<S,> RedHatBoyState<S,> {
-		pub fn context(&self,) -> &RedHatBoyContext { &self.context }
+		pub fn context(&self,) -> &RedHatBoyContext {
+			&self.context
+		}
 	}
 
 	impl RedHatBoyState<Idle,> {
@@ -213,13 +211,12 @@ mod red_hat_boy_states {
 		}
 
 		pub fn run(self,) -> RedHatBoyState<Running,> {
-			RedHatBoyState {
-				context: self.context.reset_frame().run_right(),
-				_state:  Running {},
-			}
+			RedHatBoyState { context: self.context.reset_frame().run_right(), _state: Running {}, }
 		}
 
-		pub fn frame_name(&self,) -> &str { IDLE_FRAME_NAME }
+		pub fn frame_name(&self,) -> &str {
+			IDLE_FRAME_NAME
+		}
 
 		pub fn update(&mut self,) {
 			//			crate::log!(
@@ -235,7 +232,9 @@ mod red_hat_boy_states {
 	}
 
 	impl RedHatBoyState<Running,> {
-		pub fn frame_name(&self,) -> &str { RUN_FRAME_NAME }
+		pub fn frame_name(&self,) -> &str {
+			RUN_FRAME_NAME
+		}
 
 		pub fn update(&mut self,) {
 			self.context = self.context.update(RUNNING_FRAMES,);

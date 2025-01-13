@@ -23,21 +23,20 @@
 //
 // Resources
 //
-//   - The syn::Error type:
-//     https://docs.rs/syn/2.0/syn/struct.Error.html
+//   - The syn::Error type: https://docs.rs/syn/2.0/syn/struct.Error.html
 
 use sorted::sorted;
 
 #[sorted]
 pub struct Error {
-    kind: ErrorKind,
-    message: String,
+	kind:    ErrorKind,
+	message: String,
 }
 
 enum ErrorKind {
-    Io,
-    Syntax,
-    Eof,
+	Io,
+	Syntax,
+	Eof,
 }
 
 fn main() {}

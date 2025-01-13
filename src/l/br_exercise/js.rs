@@ -62,12 +62,12 @@ pub fn js_main() {
 	let stylesheet = css::parse(&format!(
 		"{}\n{}",
 		DEFAULT_STYLESHEET,
-		collect_tag_inners(&node, "style".into()).join("\n")
+		collect_tag_inners(&node, "style").join("\n")
 	),);
 
 	let container = to_styled_node(&node, &stylesheet,)
-		.and_then(|styled_node| Some(to_layout_box(styled_node,),),)
-		.and_then(|layout_box| Some(to_element_container(layout_box,),),);
+		.map(|styled_node| to_layout_box(styled_node,),)
+		.map(|layout_box| to_element_container(layout_box,),);
 	if let Some(c,) = container {
 		siv.add_fullscreen_layer(c,);
 	}

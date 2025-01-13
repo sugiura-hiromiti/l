@@ -4,10 +4,14 @@ pub trait Size {
 	fn size(&self,) -> usize;
 }
 impl Size for usize {
-	fn size(&self,) -> usize { *self }
+	fn size(&self,) -> usize {
+		*self
+	}
 }
 impl Size for MyUsize {
-	fn size(&self,) -> usize { self.0 }
+	fn size(&self,) -> usize {
+		self.0
+	}
 }
 
 #[derive(Clone,)]
@@ -15,16 +19,22 @@ pub struct MyStr(String,);
 impl<S: Size,> std::ops::Index<S,> for MyStr {
 	type Output = str;
 
-	fn index(&self, index: S,) -> &Self::Output { &self.0[index.size()..=index.size()] }
+	fn index(&self, index: S,) -> &Self::Output {
+		&self.0[index.size()..=index.size()]
+	}
 }
 
 #[derive(PartialOrd, PartialEq, Clone, Copy,)]
 pub struct MyUsize(usize,);
 
 impl std::ops::RangeBounds<usize,> for MyUsize {
-	fn start_bound(&self,) -> std::ops::Bound<&usize,> { std::ops::Bound::Included(&self.0,) }
+	fn start_bound(&self,) -> std::ops::Bound<&usize,> {
+		std::ops::Bound::Included(&self.0,)
+	}
 
-	fn end_bound(&self,) -> std::ops::Bound<&usize,> { std::ops::Bound::Included(&self.0,) }
+	fn end_bound(&self,) -> std::ops::Bound<&usize,> {
+		std::ops::Bound::Included(&self.0,)
+	}
 }
 
 pub trait CustomMul {
@@ -32,10 +42,10 @@ pub trait CustomMul {
 }
 impl CustomMul for str {
 	fn mul(&self, times: char,) -> String {
-		let r = times as u8 - '0' as u8;
+		let r = times as u8 - b'0';
 		match self {
-			"0" => 0 * r,
-			"1" => 1 * r,
+			"0" => 0,
+			"1" => r,
 			"2" => 2 * r,
 			"3" => 3 * r,
 			"4" => 4 * r,

@@ -27,6 +27,12 @@ pub mod util {
 		last: *mut Option<Box<Node<T,>,>,>,
 	}
 
+	impl<T: Clone,> Default for Queue<T,> {
+		fn default() -> Self {
+			Self::new()
+		}
+	}
+
 	impl<T: Clone,> Queue<T,> {
 		/// この関数は初期化をしないので必ず使う前に`self.init()`を呼び出して初期化をしてください
 		pub fn new() -> Self {

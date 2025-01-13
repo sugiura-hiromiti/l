@@ -44,7 +44,7 @@ pub fn to_styled_node<'a,>(
 	Some(StyledNode { node_type: &node.node_type, properties, children, },)
 }
 
-impl<'a,> StyledNode<'a,> {
+impl StyledNode<'_,> {
 	pub fn display(&self,) -> Display {
 		match self.properties.get("display",) {
 			Some(CSSValue::Keyword(s,),) => match s.as_str() {

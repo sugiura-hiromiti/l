@@ -22,9 +22,9 @@ type None = ();
 type Result = ();
 type Box = ();
 
-#[derive(Builder)]
+#[derive(Builder,)]
 pub struct Command {
-    executable: String,
+	executable: String,
 }
 
 fn main() {}

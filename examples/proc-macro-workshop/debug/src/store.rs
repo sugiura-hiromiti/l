@@ -2,7 +2,6 @@
 // use anyhow::Error as Eror;
 //use anyhow::Result as Rslt;
 //use std::collections::HashMap;
-use syn::spanned::Spanned;
 use syn::Attribute;
 use syn::Expr;
 use syn::ExprLit;
@@ -15,6 +14,7 @@ use syn::MetaList;
 use syn::MetaNameValue;
 use syn::Path;
 use syn::Type;
+use syn::spanned::Spanned;
 
 use crate::converter;
 

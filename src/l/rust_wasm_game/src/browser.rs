@@ -1,11 +1,11 @@
-use anyhow::anyhow;
 use anyhow::Result;
+use anyhow::anyhow;
 use futures::Future;
+use wasm_bindgen::JsCast;
+use wasm_bindgen::JsValue;
 use wasm_bindgen::closure::Closure;
 use wasm_bindgen::closure::WasmClosure;
 use wasm_bindgen::closure::WasmClosureFnOnce;
-use wasm_bindgen::JsCast;
-use wasm_bindgen::JsValue;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::CanvasRenderingContext2d;
 use web_sys::Document;
@@ -36,9 +36,7 @@ pub fn canvas() -> Result<HtmlCanvasElement,> {
 		.get_element_by_id("canvas",)
 		.ok_or_else(|| anyhow!("No Canvas Element found with ID 'canvas'"),)?
 		.dyn_into::<HtmlCanvasElement>()
-		.map_err(|elem| {
-			anyhow!("Error converting {:#?} to HtmlCanvasElement", elem)
-		},)
+		.map_err(|elem| anyhow!("Error converting {:#?} to HtmlCanvasElement", elem),)
 }
 
 pub fn context() -> Result<CanvasRenderingContext2d,> {
@@ -47,9 +45,7 @@ pub fn context() -> Result<CanvasRenderingContext2d,> {
 		.map_err(|js_val| anyhow!("Error getting 2d context {:#?}", js_val),)?
 		.ok_or_else(|| anyhow!("No 2d context found"),)?
 		.dyn_into::<CanvasRenderingContext2d>()
-		.map_err(|elem| {
-			anyhow!("Error converting {:#?} to CanvasRenderingContext2d", elem)
-		},)
+		.map_err(|elem| anyhow!("Error converting {:#?} to CanvasRenderingContext2d", elem),)
 }
 
 pub fn spawn_local<F: Future<Output = (),> + 'static,>(future: F,) {
@@ -64,21 +60,15 @@ pub async fn fetch_with_str(resource: &str,) -> Result<JsValue,> {
 
 pub async fn fetch_json(json_path: &str,) -> Result<JsValue,> {
 	let rsp_val = fetch_with_str(json_path,).await?;
-	let rsp: Response = rsp_val
-		.dyn_into()
-		.map_err(|elem| anyhow!("Error converting {:#?} to Response", elem),)?;
-	JsFuture::from(
-		rsp.json().map_err(|e| {
-			anyhow!("Could not get JSON from response {:#?}", e)
-		},)?,
-	)
-	.await
-	.map_err(|e| anyhow!("error fetching JSON {:#?}", e),)
+	let rsp: Response =
+		rsp_val.dyn_into().map_err(|elem| anyhow!("Error converting {:#?} to Response", elem),)?;
+	JsFuture::from(rsp.json().map_err(|e| anyhow!("Could not get JSON from response {:#?}", e),)?,)
+		.await
+		.map_err(|e| anyhow!("error fetching JSON {:#?}", e),)
 }
 
 pub fn new_img() -> Result<HtmlImageElement,> {
-	HtmlImageElement::new()
-		.map_err(|e| anyhow!("Could not create HtmlImageElement: {:#?}", e),)
+	HtmlImageElement::new().map_err(|e| anyhow!("Could not create HtmlImageElement: {:#?}", e),)
 }
 
 pub fn closure_once<F, A, R,>(fn_once: F,) -> Closure<F::FnMut,>
@@ -102,8 +92,5 @@ pub fn create_raf_closure(f: impl FnMut(f64,) + 'static,) -> LoopClosure {
 }
 
 pub fn now() -> Result<f64,> {
-	Ok(window()?
-		.performance()
-		.ok_or_else(|| anyhow!("Performance object not found"),)?
-		.now(),)
+	Ok(window()?.performance().ok_or_else(|| anyhow!("Performance object not found"),)?.now(),)
 }

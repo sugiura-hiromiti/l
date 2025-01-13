@@ -32,7 +32,7 @@ pub fn to_styled_node<'a,>(
 	todo!("you need to implement this")
 }
 
-impl<'a,> StyledNode<'a,> {
+impl StyledNode<'_,> {
 	pub fn display(&self,) -> Display {
 		match self.properties.get("display",) {
 			Some(CSSValue::Keyword(s,),) => match s.as_str() {

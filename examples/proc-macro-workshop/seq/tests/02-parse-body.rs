@@ -13,19 +13,18 @@
 //
 // Resources:
 //
-//   - Explanation of the purpose of proc-macro2:
-//     https://docs.rs/proc-macro2/1.0/proc_macro2/
+//   - Explanation of the purpose of proc-macro2: https://docs.rs/proc-macro2/1.0/proc_macro2/
 
 use seq::seq;
 
 macro_rules! expand_to_nothing {
-    ($arg:literal) => {
-        // nothing
-    };
+	($arg:literal) => {
+		// nothing
+	};
 }
 
 seq!(N in 0..4 {
-    expand_to_nothing!(N);
+	expand_to_nothing!(N);
 });
 
 fn main() {}

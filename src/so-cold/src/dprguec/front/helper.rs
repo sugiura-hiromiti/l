@@ -40,14 +40,14 @@ pub fn entry_ui(page: String, inputs: Vec<&str,>,) -> Element {
 
 	let input_fields = rsx! {
 		{
-		    inputs
-		        .iter()
-		        .map(|&i_ty| {
-		            let mut display_field_type = i_ty;
-		            if i_ty == "name" {
-		                display_field_type = "text";
-		            }
-		            rsx! {
+			inputs
+				.iter()
+				.map(|&i_ty| {
+					let mut display_field_type = i_ty;
+					if i_ty == "name" {
+						display_field_type = "text";
+					}
+					rsx! {
 			div { id: id!(), class: TW_MARGIN_S,
 				{i_ty}
 				div { id: id!(), class: TW_DIAG_COLORS[0], {user_cx().get(i_ty).clone()} }
@@ -58,7 +58,7 @@ pub fn entry_ui(page: String, inputs: Vec<&str,>,) -> Element {
 				class: "{TW_INPUT} w-full max-w-96",
 			}
 		}
-		        })
+				})
 		}
 		input { r#type: "hidden", name: "way", value: page.clone() }
 	};

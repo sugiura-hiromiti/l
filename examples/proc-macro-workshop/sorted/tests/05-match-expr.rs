@@ -46,13 +46,12 @@
 //
 //   - Parse the input as a syn::ItemFn.
 //
-//   - Traverse the function body looking for match-expressions. This part will
-//     be easiest if you can use the VisitMut trait from Syn and write a visitor
-//     with a visit_expr_match_mut method.
+//   - Traverse the function body looking for match-expressions. This part will be easiest if you
+//     can use the VisitMut trait from Syn and write a visitor with a visit_expr_match_mut method.
 //
-//   - For each match-expression, figure out whether it has #[sorted] as one of
-//     its attributes. If so, check that the match arms are sorted and delete
-//     the #[sorted] attribute from the list of attributes.
+//   - For each match-expression, figure out whether it has #[sorted] as one of its attributes. If
+//     so, check that the match arms are sorted and delete the #[sorted] attribute from the list of
+//     attributes.
 //
 // The result should be that we get the expected compile-time error pointing out
 // that `Fmt` should come before `Io` in the match-expression.
@@ -60,34 +59,33 @@
 //
 // Resources:
 //
-//   - The VisitMut trait to iterate and mutate a syntax tree:
-//     https://docs.rs/syn/2.0/syn/visit_mut/trait.VisitMut.html
+//   - The VisitMut trait to iterate and mutate a syntax tree: https://docs.rs/syn/2.0/syn/visit_mut/trait.VisitMut.html
 //
-//   - The ExprMatch struct:
-//     https://docs.rs/syn/2.0/syn/struct.ExprMatch.html
+//   - The ExprMatch struct: https://docs.rs/syn/2.0/syn/struct.ExprMatch.html
 
 use sorted::sorted;
 
-use std::fmt::{self, Display};
+use std::fmt::Display;
+use std::fmt::{self};
 use std::io;
 
 #[sorted]
 pub enum Error {
-    Fmt(fmt::Error),
-    Io(io::Error),
+	Fmt(fmt::Error,),
+	Io(io::Error,),
 }
 
 impl Display for Error {
-    #[sorted::check]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use self::Error::*;
+	#[sorted::check]
+	fn fmt(&self, f: &mut fmt::Formatter,) -> fmt::Result {
+		use self::Error::*;
 
-        #[sorted]
-        match self {
-            Io(e) => write!(f, "{}", e),
-            Fmt(e) => write!(f, "{}", e),
-        }
-    }
+		#[sorted]
+		match self {
+			Io(e,) => write!(f, "{}", e),
+			Fmt(e,) => write!(f, "{}", e),
+		}
+	}
 }
 
 fn main() {}

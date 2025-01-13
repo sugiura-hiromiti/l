@@ -21,10 +21,10 @@ pub struct StyledNode<'a,> {
 	pub children:     Vec<StyledNode<'a,>,>,
 }
 
-impl<'a,> StyledNode<'a,> {
+impl StyledNode<'_,> {
 	///Return the specified value of a property if it exists, otherwise 'Non'.
 	pub fn val(&self, nam: &str,) -> Option<css::Value,> {
-		self.specified_values.get(nam,).map(|v| v.clone(),)
+		self.specified_values.get(nam,).cloned()
 	}
 
 	///The value of the 'display' property (defaults to inline).

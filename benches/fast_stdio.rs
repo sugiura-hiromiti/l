@@ -20,9 +20,9 @@ extern crate test;
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use std::io::stderr;
 	use std::io::BufWriter;
 	use std::io::Write;
+	use std::io::stderr;
 	use test::Bencher;
 
 	const N: usize = 100;

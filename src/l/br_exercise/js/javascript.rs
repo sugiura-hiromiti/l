@@ -23,6 +23,12 @@ pub struct JavaScriptRuntime {
 	v8_isolate: v8::OwnedIsolate,
 }
 
+impl Default for JavaScriptRuntime {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
 impl JavaScriptRuntime {
 	pub fn new() -> Self {
 		// init v8 platform just once

@@ -18,32 +18,32 @@ use bitfield::*;
 
 #[bitfield]
 pub struct RedirectionTableEntry {
-    delivery_mode: DeliveryMode,
-    reserved: B5,
+	delivery_mode: DeliveryMode,
+	reserved:      B5,
 }
 
 const F: isize = 3;
 const G: isize = 0;
 
-#[derive(BitfieldSpecifier, Debug, PartialEq)]
+#[derive(BitfieldSpecifier, Debug, PartialEq,)]
 pub enum DeliveryMode {
-    Fixed = F,
-    Lowest,
-    SMI,
-    RemoteRead,
-    NMI,
-    Init = G,
-    Startup,
-    External,
+	Fixed = F,
+	Lowest,
+	SMI,
+	RemoteRead,
+	NMI,
+	Init  = G,
+	Startup,
+	External,
 }
 
 fn main() {
-    assert_eq!(std::mem::size_of::<RedirectionTableEntry>(), 1);
+	assert_eq!(std::mem::size_of::<RedirectionTableEntry,>(), 1);
 
-    // Initialized to all 0 bits.
-    let mut entry = RedirectionTableEntry::new();
-    assert_eq!(entry.get_delivery_mode(), DeliveryMode::Init);
+	// Initialized to all 0 bits.
+	let mut entry = RedirectionTableEntry::new();
+	assert_eq!(entry.get_delivery_mode(), DeliveryMode::Init);
 
-    entry.set_delivery_mode(DeliveryMode::Lowest);
-    assert_eq!(entry.get_delivery_mode(), DeliveryMode::Lowest);
+	entry.set_delivery_mode(DeliveryMode::Lowest,);
+	assert_eq!(entry.get_delivery_mode(), DeliveryMode::Lowest);
 }

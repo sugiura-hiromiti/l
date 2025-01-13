@@ -17,15 +17,14 @@
 //
 // Resources:
 //
-//     - Example of creating a new Ident from a string:
-//       https://docs.rs/syn/2.0/syn/struct.Ident.html
+//     - Example of creating a new Ident from a string: https://docs.rs/syn/2.0/syn/struct.Ident.html
 
 use seq::seq;
 
 seq!(N in 1..4 {
-    fn f~N () -> u64 {
-        N * 2
-    }
+	fn f~N () -> u64 {
+		N * 2
+	}
 });
 
 // This f0 is written separately to detect whether your macro correctly starts
@@ -34,11 +33,11 @@ seq!(N in 1..4 {
 // generated function would conflict with this one and the program would not
 // compile.
 fn f0() -> u64 {
-    100
+	100
 }
 
 fn main() {
-    let sum = f0() + f1() + f2() + f3();
+	let sum = f0() + f1() + f2() + f3();
 
-    assert_eq!(sum, 100 + 2 + 4 + 6);
+	assert_eq!(sum, 100 + 2 + 4 + 6);
 }

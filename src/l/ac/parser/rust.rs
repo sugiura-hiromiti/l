@@ -1,5 +1,5 @@
-use anyhow::anyhow;
 use anyhow::Result;
+use anyhow::anyhow;
 
 /// 指定されたパスのrustファイルのソースコードのASTを返します
 ///
@@ -19,7 +19,7 @@ pub fn get_rs_ast(file_path: &str,) -> Result<syn::File,> {
 /// この関数は成功した場合、`fnc`の返り値を`Ok`でラップして返します
 pub fn ast_rs<T: Sized, F,>(ast: &syn::File, fnc: F,) -> Result<T,>
 where F: Fn(&syn::File,) -> T + Sized {
-	Ok(fnc(&ast,),)
+	Ok(fnc(ast,),)
 }
 
 /// # TODO:
@@ -28,7 +28,7 @@ where F: Fn(&syn::File,) -> T + Sized {
 pub fn get_fn(ast: &syn::File, name: &str,) -> Option<syn::ItemFn,> {
 	for item in &ast.items {
 		if let syn::Item::Fn(f,) = item {
-			if f.sig.ident.to_string() == name.to_string() {
+			if f.sig.ident == *name {
 				return Some(f.clone(),);
 			}
 		}

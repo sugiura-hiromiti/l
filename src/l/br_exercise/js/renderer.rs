@@ -73,7 +73,7 @@ impl View for Renderer {
 		self.view.on_event(e,)
 	}
 
-	fn call_on_any<'a,>(&mut self, s: &Selector<'_,>, cb: AnyCb<'a,>,) {
+	fn call_on_any(&mut self, s: &Selector<'_,>, cb: AnyCb<'_,>,) {
 		self.view.call_on_any(s, cb,)
 	}
 
@@ -90,11 +90,11 @@ impl Renderer {
 	pub fn new(document_element: Box<Node,>,) -> Self {
 		let stylesheet = css::parse(&format!(
 			"{DEFAULT_STYLESHEET}\n{}",
-			collect_tag_inners(&document_element, "style".into()).join("\n")
+			collect_tag_inners(&document_element, "style").join("\n")
 		),);
 		let view = to_styled_node(&document_element, &stylesheet,)
-			.and_then(|styled_node| Some(to_layout_box(styled_node,),),)
-			.and_then(|layout_box| Some(to_element_container(layout_box,),),)
+			.map(|styled_node| to_layout_box(styled_node,),)
+			.map(|layout_box| to_element_container(layout_box,),)
 			.unwrap();
 		let document_element = Arc::new(Mutex::new(document_element,),);
 		let _document_element_ref = document_element.clone();
@@ -113,11 +113,11 @@ impl Renderer {
 		let document_element = self.document_element.lock().unwrap();
 		let stylesheet = css::parse(&format!(
 			"{DEFAULT_STYLESHEET}\n{}",
-			collect_tag_inners(&document_element, "style".into()).join("\n")
+			collect_tag_inners(&document_element, "style").join("\n")
 		),);
 		self.view = to_styled_node(&document_element, &stylesheet,)
-			.and_then(|styled_node| Some(to_layout_box(styled_node,),),)
-			.and_then(|layout_box| Some(to_element_container(layout_box,),),)
+			.map(|styled_node| to_layout_box(styled_node,),)
+			.map(|layout_box| to_element_container(layout_box,),)
 			.unwrap();
 	}
 
@@ -125,7 +125,7 @@ impl Renderer {
 	pub fn execute_inline_scripts(&mut self,) {
 		let scripts = {
 			let document_element = self.document_element.lock().unwrap();
-			collect_tag_inners(&document_element, "script".into(),).join("\n",)
+			collect_tag_inners(&document_element, "script",).join("\n",)
 		};
 		self.js_runtime_instance.execute("(inline)", scripts.as_str(),).unwrap();
 	}

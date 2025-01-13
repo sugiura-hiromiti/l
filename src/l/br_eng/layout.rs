@@ -122,7 +122,7 @@ impl<'a,> LayoutBox<'a,> {
 	///Block's width depends on its parent, height depends on its children
 	fn layout_block(&mut self, cntin_blck: &Dimensions,) {
 		//Calculate parent's width at first
-		self.calc_width(&cntin_blck,);
+		self.calc_width(cntin_blck,);
 		self.calc_position(cntin_blck,);
 		self.layout_children();
 		//Calculate parent's height at last
@@ -229,7 +229,7 @@ impl<'a,> LayoutBox<'a,> {
 		for child in &mut self.children {
 			child.layout(d,);
 			//Track the height so each child is laid out below the previous content.
-			d.content.height = d.content.height + child.dimensions.margin_box().height;
+			d.content.height += child.dimensions.margin_box().height;
 		}
 	}
 
@@ -259,7 +259,7 @@ fn build_layout_tree<'a,>(style_node: &'a style::StyledNode<'a,>,) -> LayoutBox<
 			Block | Inline => {
 				let mut cl = root.clone();
 				let mut ret = cl.get_inline_container();
-				ret.children.push(build_layout_tree(&child,),);
+				ret.children.push(build_layout_tree(child,),);
 				ret
 			},
 			_ => root,

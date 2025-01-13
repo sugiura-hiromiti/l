@@ -9,25 +9,25 @@
 use seq::seq;
 
 const PROCS: [Proc; 256] = {
-    seq!(N in 0..256 {
-        [
-            #(
-                Proc::new(N),
-            )*
-        ]
-    })
+	seq!(N in 0..256 {
+		[
+			#(
+				Proc::new(N),
+			)*
+		]
+	})
 };
 
 struct Proc {
-    id: usize,
+	id: usize,
 }
 
 impl Proc {
-    const fn new(id: usize) -> Self {
-        Proc { id }
-    }
+	const fn new(id: usize,) -> Self {
+		Proc { id, }
+	}
 }
 
 fn main() {
-    assert_eq!(PROCS[32].id, 32);
+	assert_eq!(PROCS[32].id, 32);
 }

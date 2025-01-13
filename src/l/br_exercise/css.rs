@@ -191,7 +191,7 @@ where
 	Input: Stream<Token = char,>,
 	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
 {
-	many1(letter(),).map(|s| CSSValue::Keyword(s,),)
+	many1(letter(),).map(CSSValue::Keyword,)
 }
 
 #[cfg(test)]

@@ -1,12 +1,12 @@
-use anyhow::anyhow;
 use anyhow::Result as Rslt;
+use anyhow::anyhow;
 use std::cell::UnsafeCell;
 use std::sync::Mutex;
 use std::sync::OnceLock;
 use tokio::runtime::Runtime as TokioRuntime;
+use wasi_common::WasiCtx;
 use wasi_common::snapshots::preview_1::wasi_snapshot_preview1;
 use wasi_common::sync::WasiCtxBuilder;
-use wasi_common::WasiCtx;
 
 static WASI_CTX: OnceLock<Mutex<WasiCtx,>,> = OnceLock::new();
 
@@ -169,7 +169,9 @@ mod tests {
 "#;
 
 	#[test]
-	fn play() -> Rslt<(),> { wasm(GOOD_NIGHT,) }
+	fn play() -> Rslt<(),> {
+		wasm(GOOD_NIGHT,)
+	}
 
 	#[test]
 	fn one_fn() {

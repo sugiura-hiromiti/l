@@ -89,9 +89,7 @@ impl SimpleSelector {
 							AttributeSelectorOp::Contain => e
 								.attributes
 								.get(attribute,)
-								.map(|value| {
-									value.split_ascii_whitespace().find(|v| v == value,).is_some()
-								},)
+								.map(|value| value.split_ascii_whitespace().any(|v| &v == value,),)
 								.unwrap_or(false,),
 						}
 				},
@@ -238,8 +236,7 @@ where
 	Input: Stream<Token = char,>,
 	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
 {
-	let keyword = many1(letter(),).map(|s| CSSValue::Keyword(s,),);
-	keyword
+	many1(letter(),).map(CSSValue::Keyword,)
 }
 
 #[cfg(test)]

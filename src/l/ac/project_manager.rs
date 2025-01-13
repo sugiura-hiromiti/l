@@ -108,9 +108,7 @@ impl ProjectManager {
 						let pkg_jsn: serde_json::Value =
 							serde_json::from_reader(std::fs::File::open_buffered(file,)?,)?;
 						match pkg_jsn.get("dependencies",) {
-							Some(v1,) if matches!(v1.get("zenn-cli"), Some(_)) => {
-								self.project_root = p
-							},
+							Some(v1,) if v1.get("zenn-cli",).is_some() => self.project_root = p,
 							_ => return Err(anyhow!("zenn-cli seems not installed locally"),),
 						}
 					},

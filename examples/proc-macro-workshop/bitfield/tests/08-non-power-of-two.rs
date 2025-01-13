@@ -7,11 +7,11 @@
 
 use bitfield::*;
 
-#[derive(BitfieldSpecifier)]
+#[derive(BitfieldSpecifier,)]
 pub enum Bad {
-    Zero,
-    One,
-    Two,
+	Zero,
+	One,
+	Two,
 }
 
 fn main() {}

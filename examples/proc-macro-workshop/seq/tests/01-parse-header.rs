@@ -14,16 +14,14 @@
 //
 // Resources:
 //
-//   - Parsing in Syn:
-//     https://docs.rs/syn/2.0/syn/parse/index.html
+//   - Parsing in Syn: https://docs.rs/syn/2.0/syn/parse/index.html
 //
-//   - An example of a function-like procedural macro implemented using Syn:
-//     https://github.com/dtolnay/syn/tree/master/examples/lazy-static
+//   - An example of a function-like procedural macro implemented using Syn: https://github.com/dtolnay/syn/tree/master/examples/lazy-static
 
 use seq::seq;
 
 seq!(N in 0..8 {
-    // nothing
+	// nothing
 });
 
 fn main() {}

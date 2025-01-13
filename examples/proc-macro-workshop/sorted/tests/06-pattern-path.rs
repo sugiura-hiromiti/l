@@ -10,29 +10,29 @@
 //
 // Resources:
 //
-//   - The syn::Pat syntax tree which forms the left hand side of a match arm:
-//     https://docs.rs/syn/2.0/syn/enum.Pat.html
+//   - The syn::Pat syntax tree which forms the left hand side of a match arm: https://docs.rs/syn/2.0/syn/enum.Pat.html
 
 use sorted::sorted;
 
-use std::fmt::{self, Display};
+use std::fmt::Display;
+use std::fmt::{self};
 use std::io;
 
 #[sorted]
 pub enum Error {
-    Fmt(fmt::Error),
-    Io(io::Error),
+	Fmt(fmt::Error,),
+	Io(io::Error,),
 }
 
 impl Display for Error {
-    #[sorted::check]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        #[sorted]
-        match self {
-            Error::Io(e) => write!(f, "{}", e),
-            Error::Fmt(e) => write!(f, "{}", e),
-        }
-    }
+	#[sorted::check]
+	fn fmt(&self, f: &mut fmt::Formatter,) -> fmt::Result {
+		#[sorted]
+		match self {
+			Error::Io(e,) => write!(f, "{}", e),
+			Error::Fmt(e,) => write!(f, "{}", e),
+		}
+	}
 }
 
 fn main() {}
