@@ -1,13 +1,11 @@
 use self::red_hat_boy_states::*;
-use crate::browser;
-use crate::engine;
-use crate::engine::Game;
-use crate::engine::Point;
-use crate::engine::Rect;
-use crate::engine::Renderer;
-use crate::log;
+use super::browser;
+use super::engine;
+use super::engine::Game;
+use super::engine::Point;
+use super::engine::Rect;
+use super::engine::Renderer;
 use anyhow::Result;
-use core::panic;
 use gloo_utils::format::JsValueSerdeExt;
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -34,7 +32,7 @@ impl Game for WalkTheDog {
 		Ok((),)
 	}
 
-	fn update(&mut self, keystat: &crate::engine::KeyState,) {
+	fn update(&mut self, keystat: &engine::KeyState,) {
 		let mut vel = Point { x: 0, y: 0, };
 		if keystat.is_pressed("ArrowDown",) {
 			vel.y += 3;
@@ -179,7 +177,7 @@ pub enum Event {
 }
 
 mod red_hat_boy_states {
-	use crate::engine::Point;
+	use super::engine::Point;
 	const FLOOR: i16 = 475;
 	const IDLE_FRAME_NAME: &str = "Idle";
 	const RUN_FRAME_NAME: &str = "Run";

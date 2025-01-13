@@ -15,10 +15,14 @@ description = "my personal library"
 anyhow = "*"
 clap = { version = "*", features = ["derive"] }
 combine = "*"
+console_error_panic_hook = "0.1.*"
 cursive = "*"
 futures = { version = "*", features = ["thread-pool"] }
+getrandom = { version = "*", features = ["js"] }
+gloo-utils = { version = "*", features = ["serde"] }
 image = "*"
 proc-macro2 = "*"
+rand = "*"
 rusty_v8 = "*"
 serde = { version = "*", features = ["derive"] }
 serde_json = "*"
@@ -27,3 +31,31 @@ strum_macros = "*"
 syn = { version = "*", features = ["full"] }
 toml = { version = "*", features = ["parse"] }
 volatile = "*"
+wasm-bindgen = "0.2.*"
+wasm-bindgen-futures = "*"
+
+# The `web-sys` crate allows you to interact with the various browser APIs,
+# like the DOM.
+[dependencies.web-sys]
+version = "0.3.*"
+features = [
+	"Performance",
+	"Response",
+	"console",
+	"Window",
+	"Document",
+	"HtmlCanvasElement",
+	"HtmlImageElement",
+	"CanvasRenderingContext2d",
+	"KeyboardEvent",
+]
+
+# The `console_error_panic_hook` crate provides better debugging of panics by
+# logging them with `console.error`. This is great for development, but requires
+# all the `std::fmt` and `std::panicking` infrastructure, so it's only enabled
+# in debug mode.
+
+# These crates are used for running unit tests.
+[dev-dependencies]
+js-sys = "0.3.*"
+wasm-bindgen-test = "0.3.*"

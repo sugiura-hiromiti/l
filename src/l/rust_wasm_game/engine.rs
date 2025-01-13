@@ -4,9 +4,8 @@ use std::collections::HashMap;
 use std::rc::Rc;
 use std::sync::Mutex;
 
-use crate::browser;
-use crate::browser::LoopClosure;
-use crate::log;
+use super::browser;
+use super::browser::LoopClosure;
 use anyhow::Result;
 use anyhow::anyhow;
 use futures::channel::mpsc::UnboundedReceiver;
@@ -65,7 +64,7 @@ enum KeyPress {
 	KeyUp(web_sys::KeyboardEvent,),
 }
 
-pub(crate) struct KeyState {
+pub struct KeyState {
 	pressed: HashMap<String, web_sys::KeyboardEvent,>,
 }
 
@@ -75,7 +74,7 @@ impl KeyState {
 	}
 
 	pub fn is_pressed(&self, code: &str,) -> bool {
-		self.pressed.iter().for_each(|(key, val,)| {
+		self.pressed.iter().for_each(|(_key, _val,)| {
 			//log!("key:----------------------------"); log!("{key}");
 		},);
 		self.pressed.contains_key(code,)
@@ -86,7 +85,7 @@ impl KeyState {
 	}
 
 	fn set_released(&mut self, code: &str,) {
-		self.pressed.remove(code.into(),);
+		self.pressed.remove(code,);
 	}
 }
 
@@ -95,7 +94,7 @@ type SharedLoopClosure = Rc<RefCell<Option<LoopClosure,>,>,>;
 impl GameLoop {
 	pub async fn start(mut game: impl Game + 'static,) -> Result<(),> {
 		let mut keyevent_rx = prepare_input()?;
-		game.init().await;
+		let _ = game.init().await;
 		let mut game_loop = GameLoop { last_frame: browser::now()?, accumulated_delta: 0.0, };
 		let rndrr = Renderer { context: browser::context()?, };
 
@@ -113,7 +112,7 @@ impl GameLoop {
 			game_loop.last_frame = perf;
 			game.draw(&rndrr,);
 
-			browser::req_anim_frame(&f.as_ref().borrow().as_ref().unwrap(),);
+			let _a = browser::req_anim_frame(&f.as_ref().borrow().as_ref().unwrap(),);
 		},),);
 
 		browser::req_anim_frame(
@@ -137,12 +136,12 @@ pub async fn load_img(src: &str,) -> Result<HtmlImageElement,> {
 
 	let success_callback = browser::closure_once(move || {
 		if let Some(success_tx,) = success_tx.lock().ok().and_then(|mut opt| opt.take(),) {
-			success_tx.send(Ok((),),);
+			let _ = success_tx.send(Ok((),),);
 		}
 	},);
 	let error_callback = browser::closure_once(move |e: JsValue| {
 		if let Some(error_tx,) = error_tx.lock().ok().and_then(|mut opt| opt.take(),) {
-			error_tx.send(Err(anyhow!("Error Loading Image: {:#?}", e),),);
+			let _ = error_tx.send(Err(anyhow!("Error Loading Image: {:#?}", e),),);
 		}
 	},);
 	img.set_onload(Some(success_callback.as_ref().unchecked_ref(),),);
@@ -162,10 +161,10 @@ fn prepare_input() -> Result<futures::channel::mpsc::UnboundedReceiver<KeyPress,
 	let keyup_tx = keydown_tx.clone();
 
 	let onkey_down = browser::closure_wrap(Box::new(move |keycode: web_sys::KeyboardEvent| {
-		keydown_tx.borrow_mut().start_send(KeyPress::KeyDown(keycode,),);
+		let _ = keydown_tx.borrow_mut().start_send(KeyPress::KeyDown(keycode,),);
 	},) as Box<dyn FnMut(web_sys::KeyboardEvent,),>,);
 	let onkey_up = browser::closure_wrap(Box::new(move |keycode: web_sys::KeyboardEvent| {
-		keyup_tx.borrow_mut().start_send(KeyPress::KeyUp(keycode,),);
+		let _ = keyup_tx.borrow_mut().start_send(KeyPress::KeyUp(keycode,),);
 	},) as Box<dyn FnMut(web_sys::KeyboardEvent,),>,);
 
 	browser::window()?.set_onkeydown(Some(onkey_down.as_ref().unchecked_ref(),),);
