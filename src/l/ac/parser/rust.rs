@@ -42,7 +42,7 @@ mod tests {
 
 	fn this_file_ast() -> Result<syn::File,> {
 		let mut cur = std::env::current_dir()?;
-		cur.push("src/parser/rust.rs",);
+		cur.push("src/l/ac/parser/rust.rs",);
 
 		Ok(get_rs_ast(cur.to_str().unwrap(),)?,)
 	}

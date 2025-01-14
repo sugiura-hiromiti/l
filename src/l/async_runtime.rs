@@ -145,6 +145,7 @@ mod tests {
 	use super::*;
 
 	#[test]
+	#[ignore = "will not end execution"]
 	fn executor_run() {
 		let executor = Executor::new();
 		executor.get_spawner().spawn(Night::new(),);

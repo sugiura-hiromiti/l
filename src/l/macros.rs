@@ -122,25 +122,25 @@ mod tests {
 	*/
 
 	#[test]
-	#[ignore]
+	#[ignore = "annoying output"]
 	fn test_with_stdout() {
 		test_print!("🫠 from `crate::macros::tests::test_with_stdout`");
 	}
 
 	#[test]
-	#[ignore]
+	#[ignore = "annoying output"]
 	fn test_with_stderr() {
 		test_eprint!("🫠 from `crate::macros::tests::test_with_stderr`");
 	}
 
 	#[test]
-	#[ignore]
+	#[ignore = "annoying output"]
 	fn test_with_stdout_nl() {
 		test_println!("🫠 from `crate::macros::tests::test_with_stdout`");
 	}
 
 	#[test]
-	#[ignore]
+	#[ignore = "annoying output"]
 	fn test_with_stderr_nl() {
 		test_eprintln!("🫠 from `crate::macros::tests::test_with_stderr`");
 	}

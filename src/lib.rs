@@ -175,7 +175,7 @@ mod tests {
 		(0..10).for_each(|i| {
 			assert_eq!(store + i, cls_fn_mut_outer(i));
 			assert_eq!(store + i * 2, cls_fn_mut_outer.clone().call_once((i,)));
-			assert_eq!((store + i) * 2, cls_fn_mut_outer().try_into().unwrap());
+			assert_eq!((store + i) * 2, cls_fn_mut_outer() as isize);
 			store = cls_fn_mut_outer.clone().call_once((0,),);
 
 			/// `mut` keyword is required because calling `call_mut()` means `&mut self` is assured
@@ -188,10 +188,10 @@ mod tests {
 			assert_eq!(cls_fn_mut.i + i, cls_fn_mut(i));
 			assert_eq!(cls_fn_mut(i), cls_fn_mut.i);
 
-			assert_eq!(i * 6 * 2, cls_fn_mut().try_into().unwrap());
-			assert_eq!(cls_fn_mut.i * 2, cls_fn_mut.clone()().try_into().unwrap());
-			assert_eq!(cls_fn_mut.i * 2, cls_fn_mut.clone().call_mut(()).try_into().unwrap());
-			assert_eq!(i * 6 * 2 * 10, cls_fn_mut.clone().call_once(()).try_into().unwrap());
+			assert_eq!(i * 6 * 2, cls_fn_mut() as isize);
+			assert_eq!(cls_fn_mut.i * 2, cls_fn_mut.clone()() as isize);
+			assert_eq!(cls_fn_mut.i * 2, cls_fn_mut.clone().call_mut(()) as isize);
+			assert_eq!(i * 6 * 2 * 10, cls_fn_mut.clone().call_once(()) as isize);
 
 			let mut cls_fn_mut2 = cls_fn_mut.clone();
 			cls_fn_mut2.i = 666;

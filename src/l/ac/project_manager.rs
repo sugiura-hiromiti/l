@@ -371,7 +371,7 @@ mod tests {
 	#[test]
 	fn path_representation_of_dir() -> Result<(),> {
 		let cur_dir = std::env::current_dir()?;
-		assert_eq!(cur_dir.to_str().unwrap(), "/Users/a/Downloads/rust/ac");
+		assert_eq!(cur_dir.to_str().unwrap(), "/Users/a/Downloads/QwQ/l");
 		assert!(cur_dir.is_dir());
 		Ok((),)
 	}

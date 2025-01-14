@@ -60,6 +60,7 @@ mod tests {
 	}
 
 	#[test]
+	#[ignore = "blocks test process"]
 	fn simulate_future() {
 		let pool = ThreadPool::new().expect("failed to create thread pool",);
 		let shared_shate = Arc::new(RwLock::new(SharedState { waker: None, },),);
