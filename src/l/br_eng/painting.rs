@@ -26,6 +26,7 @@ impl Canvas {
 
 	///Here, we just paint a rectangler
 	fn paint_item(&mut self, item: &DisplayCommand,) {
+		#[allow(irrefutable_let_patterns)]
 		if let &DisplayCommand::SolidColor(color, rct,) = &item {
 			let x0 = rct.x.clamp(0.0, self.width as f64,) as usize;
 			let y0 = rct.y.clamp(0.0, self.height as f64,) as usize;

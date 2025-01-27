@@ -16,7 +16,7 @@ use web_sys::CanvasRenderingContext2d;
 use web_sys::HtmlImageElement;
 
 pub trait Game {
-	async fn init(&mut self,) -> Result<(),>;
+	fn init(&mut self,) -> impl Future<Output = Result<(),>,>;
 	fn update(&mut self, keystat: &KeyState,);
 	fn draw(&self, rndr: &Renderer,);
 }

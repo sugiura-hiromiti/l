@@ -3,6 +3,7 @@
 #![feature(unboxed_closures)]
 #![feature(fn_traits)]
 #![feature(impl_trait_in_assoc_type)]
+#![feature(str_from_utf16_endian)]
 #![allow(unused_doc_comments)]
 
 pub mod l;
@@ -20,8 +21,8 @@ mod tests {
 
 	#[test]
 	fn algo_palindrome() {
-		assert_eq!(l::algorithm::longest_palindrome("ahy".to_string()), "a".to_string());
-		assert_eq!(l::algorithm::longest_palindrome("(0v0)".to_string()), "0v0".to_string());
+		assert_eq!(l::utl::algorithm::longest_palindrome("ahy".to_string()), "a".to_string());
+		assert_eq!(l::utl::algorithm::longest_palindrome("(0v0)".to_string()), "0v0".to_string());
 	}
 
 	#[test]

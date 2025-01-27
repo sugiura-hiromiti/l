@@ -21,6 +21,7 @@ futures = { version = "*", features = ["thread-pool"] }
 getrandom = { version = "*", features = ["js"] }
 gloo-utils = { version = "*", features = ["serde"] }
 image = "*"
+pcap = "*"
 proc-macro2 = "*"
 rand = "*"
 rusty_v8 = "*"
@@ -57,5 +58,6 @@ features = [
 
 # These crates are used for running unit tests.
 [dev-dependencies]
+divan = "*"
 js-sys = "0.3.*"
 wasm-bindgen-test = "0.3.*"
