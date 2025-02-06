@@ -42,6 +42,7 @@ mod tests {
 	use super::*;
 
 	#[test]
+	#[ignore = "endless"]
 	fn run_server() -> Rslt<(),> {
 		run()
 	}

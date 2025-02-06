@@ -272,4 +272,41 @@ mod tests {
 		assert_eq!(2525, normal_function.call_mut(()));
 		assert_eq!(2525, normal_function.call_once(()));
 	}
+
+	#[test]
+	fn ref_mut_as_fn_arg() {
+		fn take_ref_mut_arg(x: &mut String,) -> &mut String {
+			*x = format!("abc");
+			x.push('\n',);
+			x
+		}
+
+		let mut x = String::new();
+		//take_ref_mut_arg(&mut x,);
+		assert_eq!(take_ref_mut_arg(&mut x), "abc\n");
+		let y = take_ref_mut_arg(&mut x,).clone();
+		assert_eq!(x, y);
+
+		// this will cause error
+		//let y = take_ref_mut_arg(&mut x,);
+		//assert_eq!(x, *y);
+	}
+
+	#[test]
+	fn test_borrowing_with_different_mutability() {
+		let mut a = 0;
+		let mut b = &mut a;
+		let c = &mut b;
+
+		**c += 1;
+		// uncommenting code below cause error
+		//assert_eq!(a, 1);
+		assert_eq!(*b, 1);
+
+		*b += 1;
+		assert_eq!(a, 2);
+
+		a += 1;
+		assert_eq!(a, 3);
+	}
 }

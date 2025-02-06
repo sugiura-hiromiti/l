@@ -73,6 +73,7 @@ mod tests {
 	use super::*;
 
 	#[test]
+	#[ignore = "takes too long time"]
 	fn test_experiment_exit_code() -> Rslt<(),> {
 		let min = -128;
 		let max = 127;

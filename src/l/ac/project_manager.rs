@@ -264,7 +264,7 @@ impl ProjectManager {
 	///
 	/// # Panic
 	///
-	/// ```rust
+	/// ```ignore
 	/// assert!(self.cli.project_type.is_some());
 	/// ```
 	///
