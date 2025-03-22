@@ -31,88 +31,82 @@ use dom::Node;
 use dom::Text;
 
 /// `attribute` consumes `name="value"`.
-fn attribute<Input,>() -> impl Parser<Input, Output = (String, String,),>
+fn attribute<Input>() -> impl Parser<Input, Output = (String, String)>
 where
-	Input: Stream<Token = char,>,
-	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
+	Input: Stream<Token = char>,
+	Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
 	(
-		many1::<String, _, _,>(letter(),), //read attribute name
-		many::<String, _, _,>(space().or(newline(),),), //skip space & newline
-		char('=',),                        //eat =
-		many::<String, _, _,>(space().or(newline(),),), //skip space & newline
-		between(
-			char('"',),
-			char('"',),
-			many1::<String, _, _,>(satisfy(|c| {
-				c != '"'
-			},),),
-		), /* read value */
+		many1::<String, _, _>(letter()),             //read attribute name
+		many::<String, _, _>(space().or(newline())), //skip space & newline
+		char('='),                                   //eat =
+		many::<String, _, _>(space().or(newline())), //skip space & newline
+		between(char('"'), char('"'), many1::<String, _, _>(satisfy(|c| c != '"'))), /* read value */
 	)
-		.map(|v| (v.0, v.4,),)
+		.map(|v| (v.0, v.4))
 }
 
 /// `attributes` consumes `name1="value1" name2="value2" ... name="value"`
-fn attributes<Input,>() -> impl Parser<Input, Output = AttrMap,>
+fn attributes<Input>() -> impl Parser<Input, Output = AttrMap>
 where
-	Input: Stream<Token = char,>,
-	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
+	Input: Stream<Token = char>,
+	Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
-	let attrs = (attribute(), many::<String, _, _,>(space().or(newline(),),),).map(|a| a.0,);
-	many(attrs,)
+	let attrs = (attribute(), many::<String, _, _>(space().or(newline()))).map(|a| a.0);
+	many(attrs)
 }
 
-fn open_tag<Input,>() -> impl Parser<Input, Output = (String, AttrMap,),>
+fn open_tag<Input>() -> impl Parser<Input, Output = (String, AttrMap)>
 where
-	Input: Stream<Token = char,>,
-	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
+	Input: Stream<Token = char>,
+	Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
 	(
-		char('<',),
-		many1::<String, _, _,>(letter(),),
-		between(many::<String, _, _,>(space().or(newline(),),), char('>',), attributes(),),
+		char('<'),
+		many1::<String, _, _>(letter()),
+		between(many::<String, _, _>(space().or(newline())), char('>'), attributes()),
 	)
-		.map(|t| (t.1, t.2,),)
+		.map(|t| (t.1, t.2))
 }
 
 /// close_tag consumes `</tag_name>`.
-fn close_tag<Input,>() -> impl Parser<Input, Output = String,>
+fn close_tag<Input>() -> impl Parser<Input, Output = String>
 where
-	Input: Stream<Token = char,>,
-	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
+	Input: Stream<Token = char>,
+	Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
-	(char('<',), between(char('/',), char('>',), many1::<String, _, _,>(satisfy(|c| c != '>',),),),)
-		.map(|t| t.1,)
+	(char('<'), between(char('/'), char('>'), many1::<String, _, _>(satisfy(|c| c != '>'))))
+		.map(|t| t.1)
 }
 
 // `nodes_` (and `nodes`) tries to parse input as Element or Text.
-fn nodes_<Input,>() -> impl Parser<Input, Output = Vec<Box<Node,>,>,>
+fn nodes_<Input>() -> impl Parser<Input, Output = Vec<Box<Node>>>
 where
-	Input: Stream<Token = char,>,
-	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
+	Input: Stream<Token = char>,
+	Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
-	attempt(many(choice((attempt(element(),), attempt(text(),),),),),)
+	attempt(many(choice((attempt(element()), attempt(text())))))
 }
 
 /// `text` consumes input until `<` comes.
-fn text<Input,>() -> impl Parser<Input, Output = Box<Node,>,>
+fn text<Input>() -> impl Parser<Input, Output = Box<Node>>
 where
-	Input: Stream<Token = char,>,
-	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
+	Input: Stream<Token = char>,
+	Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
-	many1(satisfy(|c| c != '<',),).map(Text::new,)
+	many1(satisfy(|c| c != '<')).map(Text::new)
 }
 
 /// `element` consumes `<tag_name attr_name="attr_value"
 /// ...>(children)</tag_name>`.
-fn element<Input,>() -> impl Parser<Input, Output = Box<Node,>,>
+fn element<Input>() -> impl Parser<Input, Output = Box<Node>>
 where
-	Input: Stream<Token = char,>,
-	Input::Error: ParseError<Input::Token, Input::Range, Input::Position,>,
+	Input: Stream<Token = char>,
+	Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
 {
-	(open_tag(), nodes(), close_tag(),).and_then(|((op_tag, attributes,), children, cls_tag,)| {
+	(open_tag(), nodes(), close_tag()).and_then(|((op_tag, attributes), children, cls_tag)| {
 		if op_tag == cls_tag {
-			Ok(Element::new(op_tag, attributes, children,),)
+			Ok(Element::new(op_tag, attributes, children))
 		} else {
 			Err(
 						<Input::Error as combine::error::ParseError<
@@ -124,7 +118,7 @@ where
 						),
 					)
 		}
-	},)
+	})
 }
 
 combine::parser! {
@@ -135,17 +129,17 @@ combine::parser! {
 	 }
 }
 
-pub fn parse(raw: &str,) -> Box<Node,> {
-	let mut nodes = parse_raw(raw,);
+pub fn parse(raw: &str) -> Box<Node> {
+	let mut nodes = parse_raw(raw);
 	if nodes.len() == 1 {
 		nodes.pop().unwrap()
 	} else {
-		Element::new("html".to_string(), AttrMap::new(), nodes,)
+		Element::new("html".to_string(), AttrMap::new(), nodes)
 	}
 }
 
-pub fn parse_raw(raw: &str,) -> Vec<Box<Node,>,> {
-	let (nodes, _,) = nodes_().parse(raw,).unwrap();
+pub fn parse_raw(raw: &str) -> Vec<Box<Node>> {
+	let (nodes, _) = nodes_().parse(raw).unwrap();
 	nodes
 }
 
@@ -170,8 +164,8 @@ mod tests {
 	#[test]
 	fn test_parse_attributes() {
 		let mut expected_map = AttrMap::new();
-		expected_map.insert("test".to_string(), "foobar".to_string(),);
-		expected_map.insert("abc".to_string(), "def".to_string(),);
+		expected_map.insert("test".to_string(), "foobar".to_string());
+		expected_map.insert("abc".to_string(), "def".to_string());
 		assert_eq!(attributes().parse("test=\"foobar\" abc=\"def\""), Ok((expected_map, "")));
 
 		assert_eq!(attributes().parse(""), Ok((AttrMap::new(), "")))
@@ -187,15 +181,15 @@ mod tests {
 		}
 		{
 			let mut attributes = AttrMap::new();
-			attributes.insert("id".to_string(), "test".to_string(),);
+			attributes.insert("id".to_string(), "test".to_string());
 			assert_eq!(open_tag().parse("<p id=\"test\">"), Ok((("p".to_string(), attributes), "")))
 		}
 
 		{
-			let result = open_tag().parse("<p id=\"test\" class=\"sample\">",);
+			let result = open_tag().parse("<p id=\"test\" class=\"sample\">");
 			let mut attributes = AttrMap::new();
-			attributes.insert("id".to_string(), "test".to_string(),);
-			attributes.insert("class".to_string(), "sample".to_string(),);
+			attributes.insert("id".to_string(), "test".to_string());
+			attributes.insert("class".to_string(), "sample".to_string());
 			assert_eq!(result, Ok((("p".to_string(), attributes), "")));
 		}
 
@@ -207,7 +201,7 @@ mod tests {
 	// parsing tests of close tags
 	#[test]
 	fn test_parse_close_tag() {
-		let result = close_tag().parse("</p>",);
+		let result = close_tag().parse("</p>");
 		assert_eq!(result, Ok(("p".to_string(), "")))
 	}
 
@@ -221,9 +215,11 @@ mod tests {
 		assert_eq!(
 			element().parse("<p>hello world</p>"),
 			Ok((
-				Element::new("p".to_string(), AttrMap::new(), vec![Text::new(
-					"hello world".to_string()
-				)]),
+				Element::new(
+					"p".to_string(),
+					AttrMap::new(),
+					vec![Text::new("hello world".to_string())]
+				),
 				""
 			))
 		);
@@ -231,11 +227,15 @@ mod tests {
 		assert_eq!(
 			element().parse("<div><p>hello world</p></div>"),
 			Ok((
-				Element::new("div".to_string(), AttrMap::new(), vec![Element::new(
-					"p".to_string(),
+				Element::new(
+					"div".to_string(),
 					AttrMap::new(),
-					vec![Text::new("hello world".to_string())]
-				)],),
+					vec![Element::new(
+						"p".to_string(),
+						AttrMap::new(),
+						vec![Text::new("hello world".to_string())]
+					)],
+				),
 				""
 			))
 		);

@@ -1,4 +1,5 @@
 //! My custom Library of rust
+#![feature(associated_type_defaults)]
 #![feature(pattern, never_type, file_buffered, iterator_try_collect)]
 #![feature(unboxed_closures)]
 #![feature(fn_traits)]
@@ -308,5 +309,33 @@ mod tests {
 
 		a += 1;
 		assert_eq!(a, 3);
+	}
+
+	#[test]
+	fn from_str_binary_radix() -> Rslt<(),> {
+		let thirty_eight = u128::from_str_radix("000100110", 2,)?;
+		assert_eq!(thirty_eight, 38);
+
+		Ok((),)
+	}
+
+	#[test]
+	fn bit_and() {
+		let bit_field = 0b1_001 & 0b0_001;
+		assert_eq!(bit_field, 0b1);
+	}
+
+	#[test]
+	fn bit_or() {
+		let bit_field = 0b1_001 | 0b0_100;
+		assert_eq!(bit_field, 0b1_101);
+	}
+
+	#[test]
+	fn bit_left_shift() {
+		let bit_field = 0b1 << 0;
+		assert_eq!(bit_field, 0b1);
+		let bit_field = 0b1 << 1;
+		assert_eq!(bit_field, 0b10);
 	}
 }

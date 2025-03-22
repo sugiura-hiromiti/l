@@ -39,8 +39,8 @@ p, div {
 }
 "#;
 
-pub fn collect_tag_inners(node: &Box<Node,>, tag_name: &str,) -> Vec<String,> {
-	if let NodeType::Element(ref element,) = node.node_type {
+pub fn collect_tag_inners(node: &Box<Node>, tag_name: &str) -> Vec<String> {
+	if let NodeType::Element(ref element) = node.node_type {
 		if element.tag_name.as_str() == tag_name {
 			return vec![node.inner_text()];
 		}
@@ -48,8 +48,8 @@ pub fn collect_tag_inners(node: &Box<Node,>, tag_name: &str,) -> Vec<String,> {
 
 	node.children
 		.iter()
-		.map(|child| collect_tag_inners(child, tag_name,),)
-		.collect::<Vec<Vec<String,>,>>()
+		.map(|child| collect_tag_inners(child, tag_name))
+		.collect::<Vec<Vec<String>>>()
 		.into_iter()
 		.flatten()
 		.collect()
@@ -58,18 +58,18 @@ pub fn collect_tag_inners(node: &Box<Node,>, tag_name: &str,) -> Vec<String,> {
 pub fn js_main() {
 	let mut siv = cursive::default();
 
-	let node = html::parse(HTML,);
+	let node = html::parse(HTML);
 	let stylesheet = css::parse(&format!(
 		"{}\n{}",
 		DEFAULT_STYLESHEET,
 		collect_tag_inners(&node, "style").join("\n")
-	),);
+	));
 
-	let container = to_styled_node(&node, &stylesheet,)
-		.map(|styled_node| to_layout_box(styled_node,),)
-		.map(|layout_box| to_element_container(layout_box,),);
-	if let Some(c,) = container {
-		siv.add_fullscreen_layer(c,);
+	let container = to_styled_node(&node, &stylesheet)
+		.map(|styled_node| to_layout_box(styled_node))
+		.map(|layout_box| to_element_container(layout_box));
+	if let Some(c) = container {
+		siv.add_fullscreen_layer(c);
 	}
 
 	siv.run();

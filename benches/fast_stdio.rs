@@ -28,68 +28,68 @@ mod tests {
 	const N: usize = 100;
 
 	#[bench]
-	fn normal_o(b: &mut Bencher,) {
+	fn normal_o(b: &mut Bencher) {
 		b.iter(|| {
 			(0..N).for_each(|_| {
 				eprintln!("yes");
-			},);
-		},);
+			});
+		});
 	}
 
 	#[bench]
-	fn lockless(b: &mut Bencher,) {
+	fn lockless(b: &mut Bencher) {
 		b.iter(|| {
 			let mut err = stderr().lock();
 			(0..N).for_each(|_| {
 				writeln!(err, "yes").unwrap();
-			},);
-		},);
+			});
+		});
 	}
 
 	#[bench]
-	fn no_ln(b: &mut Bencher,) {
+	fn no_ln(b: &mut Bencher) {
 		b.iter(|| {
 			let mut err = stderr().lock();
 			(0..N).for_each(|_| {
 				write!(err, "yes").unwrap();
-			},);
-		},);
+			});
+		});
 	}
 
 	#[bench]
-	fn buffering(b: &mut Bencher,) {
+	fn buffering(b: &mut Bencher) {
 		b.iter(|| {
-			let mut err = BufWriter::new(stderr().lock(),);
+			let mut err = BufWriter::new(stderr().lock());
 			(0..N).for_each(|_| {
 				write!(err, "yes").unwrap();
-			},);
-		},);
+			});
+		});
 	}
 
 	#[bench]
-	fn all_in_once(b: &mut Bencher,) {
+	fn all_in_once(b: &mut Bencher) {
 		b.iter(|| {
-			let mut yes = String::with_capacity(N * 3,);
+			let mut yes = String::with_capacity(N * 3);
 			(0..N).for_each(|_| {
 				yes += "yes";
-			},);
+			});
 
 			assert_eq!(yes.len(), yes.capacity());
-			BufWriter::new(stderr().lock(),).write_all(yes.as_bytes(),).unwrap();
-		},);
+			BufWriter::new(stderr().lock()).write_all(yes.as_bytes()).unwrap();
+		});
 	}
 
 	#[bench]
-	fn all_in_once_with_byte(b: &mut Bencher,) {
+	fn all_in_once_with_byte(b: &mut Bencher) {
 		b.iter(|| {
 			let mut yes = [0; 300];
 			(0..N).for_each(|i| {
 				yes[i * 3] = b'y';
 				yes[i * 3 + 1] = b'e';
 				yes[i * 3 + 2] = b's';
-			},);
+			});
 
-			BufWriter::new(stderr().lock(),).write_all(&yes,).unwrap();
-		},);
+			BufWriter::new(stderr().lock()).write_all(&yes).unwrap();
+		});
 	}
 }

@@ -1,0 +1,11 @@
+pub mod adt_02;
+pub mod applicative_functors_part1_10;
+pub mod applicative_functors_part2_11;
+pub mod folds_monoids_07;
+pub mod higher_order_04;
+pub mod intro_01;
+pub mod io_08;
+pub mod lazy_06;
+pub mod monads_12;
+pub mod rec_poly_03;
+pub mod typeclasses_05;

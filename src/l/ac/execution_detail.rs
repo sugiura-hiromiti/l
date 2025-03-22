@@ -6,29 +6,29 @@ use clap::Parser;
 use clap::Subcommand;
 use clap::ValueEnum;
 
-#[derive(Parser,)]
+#[derive(Parser)]
 #[command(version, about)]
 pub struct Cli {
 	#[command(subcommand)]
 	/// command to specify pm behivor. like run, test ...
-	pub command: Option<Command,>,
+	pub command: Option<Command>,
 
 	#[arg(short, long)]
 	/// arguments passed to original command
-	pub args_passed_to_original: Vec<String,>,
+	pub args_passed_to_original: Vec<String>,
 
 	#[arg(short, long)]
-	pub project_type: Option<ProjectType,>,
+	pub project_type: Option<ProjectType>,
 
 	#[arg(short, long)]
-	pub tarrget_file: Option<std::path::PathBuf,>,
+	pub tarrget_file: Option<std::path::PathBuf>,
 }
 
 impl Cli {
 	pub fn init() -> Self {
 		let mut cli = Cli::parse();
 		if cli.command.is_none() {
-			cli.command = Some(Command::Run,);
+			cli.command = Some(Command::Run);
 		}
 		cli
 	}
@@ -43,7 +43,7 @@ impl Cli {
 	/// # TODO
 	///
 	/// - `opt`を使用する
-	pub fn target_hint(&self, opt: Option<&str,>,) -> Option<&str,> {
+	pub fn target_hint(&self, opt: Option<&str>) -> Option<&str> {
 		assert!(self.project_type.is_some());
 		assert!(self.command.is_some());
 
@@ -56,13 +56,13 @@ impl Cli {
 			&Rust | &Scheme | &Lisp | &Lua | &TypeScript | &C | &CPP | &Swift | &Python => {
 				self.command.as_ref().unwrap().default_target()
 			},
-			WebSite => Some("index.html",),
-			Just => Some("justfile",),
+			WebSite => Some("index.html"),
+			Just => Some("justfile"),
 		}
 	}
 }
 
-#[derive(Subcommand,)]
+#[derive(Subcommand)]
 pub enum Command {
 	// general commands
 	/// For markup language, this command will preview target,
@@ -85,17 +85,17 @@ pub enum Command {
 }
 
 impl Command {
-	fn default_target(&self,) -> Option<&str,> {
+	fn default_target(&self) -> Option<&str> {
 		use Command::*;
 		match self {
-			&Run | &Build => Some("main",),
-			&Test => Some("test",),
+			&Run | &Build => Some("main"),
+			&Test => Some("test"),
 			_ => None,
 		}
 	}
 }
 
-#[derive(Clone, ValueEnum, Debug, strum_macros::EnumIter,)]
+#[derive(Clone, ValueEnum, Debug, strum_macros::EnumIter)]
 pub enum ProjectType {
 	RustNvimConfig,
 	Cargo,
@@ -121,11 +121,11 @@ pub enum ProjectType {
 }
 
 impl ProjectType {
-	pub fn valid_commands(&self,) -> Vec<Command,> {
+	pub fn valid_commands(&self) -> Vec<Command> {
 		todo!()
 	}
 
-	pub fn binary(&self,) -> &str {
+	pub fn binary(&self) -> &str {
 		use ProjectType::*;
 		match self {
 			RustNvimConfig | Cargo => "cargo",

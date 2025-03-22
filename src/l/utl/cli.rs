@@ -1,4 +1,5 @@
 //! utility for cli project
+
 use anyhow::Result as Rslt;
 use anyhow::anyhow;
 use std::env::Args;

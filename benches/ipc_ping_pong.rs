@@ -6,6 +6,6 @@ fn main() {
 }
 
 #[divan::bench]
-fn stdio(_b: divan::Bencher,) {
+fn stdio(_b: divan::Bencher) {
 	let _n = 1000;
 }

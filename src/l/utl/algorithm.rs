@@ -1,9 +1,9 @@
 //!My algorithm collection
 
 ///This `fn` uses **manacher's algorithm**
-pub fn longest_palindrome(s: String,) -> String {
+pub fn longest_palindrome(s: String) -> String {
 	let s_with_bogus = format!("|{}", s.chars().map(|c| c.to_string() + "|",).collect::<String>());
-	let (mut center, mut radius, len,) = (0, 0, s_with_bogus.len(),);
+	let (mut center, mut radius, len) = (0, 0, s_with_bogus.len());
 	let mut palind_radii = vec![0; len];
 
 	while center < len {
@@ -17,7 +17,7 @@ pub fn longest_palindrome(s: String,) -> String {
 
 		palind_radii[center] = radius;
 
-		let (old_center, old_radius,) = (center, radius,);
+		let (old_center, old_radius) = (center, radius);
 		center += 1;
 		radius = 0;
 		while center <= old_center + old_radius {
@@ -40,14 +40,14 @@ pub fn longest_palindrome(s: String,) -> String {
 	}
 
 	radius = 0;
-	for (i, &r,) in palind_radii.iter().enumerate() {
+	for (i, &r) in palind_radii.iter().enumerate() {
 		if radius < r {
 			radius = r;
 			center = i;
 		}
 	}
 
-	s_with_bogus[center - radius..center + radius + 1].chars().filter(|&c| c != '|',).collect()
+	s_with_bogus[center - radius..center + radius + 1].chars().filter(|&c| c != '|').collect()
 }
 
 ///See more detail at [here](https://leetcode.com/problems/regular-expression-matching/description/)
@@ -64,18 +64,17 @@ pub fn longest_palindrome(s: String,) -> String {
 /// assert_eq!(regex_match("a".to_string(), ".*..a*".to_string()), false);
 /// assert_eq!(regex_match("ab".to_string(), ".*..".to_string()), true);
 /// ```
-pub fn regex_match(s: String, p: String,) -> bool {
+pub fn regex_match(s: String, p: String) -> bool {
 	if p.is_empty() {
 		return s.is_empty();
 	}
 
-	let first_match =
-		!s.is_empty() && (p.chars().next() == s.chars().next() || p.starts_with('.',));
+	let first_match = !s.is_empty() && (p.chars().next() == s.chars().next() || p.starts_with('.'));
 
-	if p.len() >= 2 && p.chars().nth(1,) == Some('*',) {
-		regex_match(s.clone(), p[2..].to_string(),)
-			|| (first_match && regex_match(s[1..].to_string(), p,))
+	if p.len() >= 2 && p.chars().nth(1) == Some('*') {
+		regex_match(s.clone(), p[2..].to_string())
+			|| (first_match && regex_match(s[1..].to_string(), p))
 	} else {
-		first_match && regex_match(s[1..].to_string(), p[1..].to_string(),)
+		first_match && regex_match(s[1..].to_string(), p[1..].to_string())
 	}
 }

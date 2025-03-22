@@ -31,12 +31,12 @@ impl Night {
 		}
 	}
 
-	fn print_state(&self,) {
+	fn print_state(&self) {
 		let state = self.state_name();
 		crate::test_eprintln!("{state}");
 	}
 
-	fn state_name(&self,) -> String {
+	fn state_name(&self) -> String {
 		self.state.as_ref().to_owned()
 	}
 }
@@ -44,7 +44,7 @@ impl Night {
 impl Future for Night {
 	type Output = ();
 
-	fn poll(mut self: Pin<&mut Self,>, cx: &mut Context<'_,>,) -> std::task::Poll<Self::Output,> {
+	fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> std::task::Poll<Self::Output> {
 		use StateNight::*;
 		match self.state {
 			Early => {
@@ -61,13 +61,13 @@ impl Future for Night {
 			},
 			Mid => {
 				(*self).print_state();
-				Poll::Ready((),)
+				Poll::Ready(())
 			},
 		}
 	}
 }
 
-#[derive(strum_macros::AsRefStr,)]
+#[derive(strum_macros::AsRefStr)]
 enum StateNight {
 	Early,
 	Late,
@@ -77,23 +77,23 @@ enum StateNight {
 // execution unit
 pub struct Task {
 	// executed coroutine
-	future: Mutex<BoxFuture<'static, (),>,>,
+	future: Mutex<BoxFuture<'static, ()>>,
 	// channel for schedule to executor
-	sender: SyncSender<Arc<Task,>,>,
+	sender: SyncSender<Arc<Task>>,
 }
 
 /// Scheduling Self
 impl ArcWake for Task {
-	fn wake_by_ref(arc_self: &Arc<Self,>,) {
+	fn wake_by_ref(arc_self: &Arc<Self>) {
 		let self0 = arc_self.clone();
-		arc_self.sender.send(self0,).unwrap();
+		arc_self.sender.send(self0).unwrap();
 	}
 }
 
 pub struct Executor {
 	// execution queue
-	sender:   SyncSender<Arc<Task,>,>,
-	receiver: Receiver<Arc<Task,>,>,
+	sender: SyncSender<Arc<Task>>,
+	receiver: Receiver<Arc<Task>>,
 }
 
 impl Default for Executor {
@@ -105,38 +105,38 @@ impl Default for Executor {
 impl Executor {
 	pub fn new() -> Self {
 		// max amount of queued tasks is 1024
-		let (sender, receiver,) = sync_channel(1024,);
-		Self { sender: sender.clone(), receiver, }
+		let (sender, receiver) = sync_channel(1024);
+		Self { sender: sender.clone(), receiver }
 	}
 
 	// get spawner for generate new task
-	pub fn get_spawner(&self,) -> Spawner {
-		Spawner { sender: self.sender.clone(), }
+	pub fn get_spawner(&self) -> Spawner {
+		Spawner { sender: self.sender.clone() }
 	}
 
-	pub fn run(&self,) {
+	pub fn run(&self) {
 		// execute a task send from spawner each time
-		while let Ok(task,) = self.receiver.recv() {
+		while let Ok(task) = self.receiver.recv() {
 			// setup context
 			let mut future = task.future.lock().unwrap();
-			let waker = waker_ref(&task,);
-			let mut ctx = Context::from_waker(&waker,);
-			let _ = future.as_mut().poll(&mut ctx,);
+			let waker = waker_ref(&task);
+			let mut ctx = Context::from_waker(&waker);
+			let _ = future.as_mut().poll(&mut ctx);
 		}
 	}
 }
 
 // generate task and send it to queue
 pub struct Spawner {
-	sender: SyncSender<Arc<Task,>,>,
+	sender: SyncSender<Arc<Task>>,
 }
 
 impl Spawner {
-	pub fn spawn(&self, future: impl Future<Output = (),> + 'static + Send,) {
+	pub fn spawn(&self, future: impl Future<Output = ()> + 'static + Send) {
 		let future = future.boxed();
-		let task = Arc::new(Task { future: Mutex::new(future,), sender: self.sender.clone(), },);
+		let task = Arc::new(Task { future: Mutex::new(future), sender: self.sender.clone() });
 
-		self.sender.send(task,).unwrap();
+		self.sender.send(task).unwrap();
 	}
 }
 
@@ -148,7 +148,7 @@ mod tests {
 	#[ignore = "will not end execution"]
 	fn executor_run() {
 		let executor = Executor::new();
-		executor.get_spawner().spawn(Night::new(),);
+		executor.get_spawner().spawn(Night::new());
 		executor.run();
 	}
 }

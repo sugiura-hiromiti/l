@@ -26,16 +26,16 @@ macro_rules! sh_cmd {
 	($cmd:expr, $args:expr) => {{
 		use anyhow::anyhow;
 		if $cmd != "cd" {
-			let mut cmd = std::process::Command::new($cmd,);
-			cmd.args($args,);
+			let mut cmd = std::process::Command::new($cmd);
+			cmd.args($args);
 			match cmd.output() {
-				Err(e,) => Err(anyhow!("{e}"),),
-				Ok(o,) => Ok(Some(o,),),
+				Err(e) => Err(anyhow!("{e}")),
+				Ok(o) => Ok(Some(o)),
 			}
 		} else {
-			match std::env::set_current_dir(&$args.last().unwrap(),) {
-				Ok((),) => Ok(None,),
-				Err(e,) => Err(anyhow!("{e}"),),
+			match std::env::set_current_dir(&$args.last().unwrap()) {
+				Ok(()) => Ok(None),
+				Err(e) => Err(anyhow!("{e}")),
 			}
 		}
 	}};
@@ -44,16 +44,16 @@ macro_rules! sh_cmd {
 		use anyhow::anyhow;
 		if $cmd == "cd" {
 			match std::env::set_current_dir(
-				std::env::var("HOME",).expect("|>env_var $HOME not found",),
+				std::env::var("HOME").expect("|>env_var $HOME not found"),
 			) {
-				Ok((),) => Ok(None,),
-				Err(e,) => Err(anyhow!("{e}"),),
+				Ok(()) => Ok(None),
+				Err(e) => Err(anyhow!("{e}")),
 			}
 		} else {
-			let mut cmd = std::process::Command::new($cmd,);
+			let mut cmd = std::process::Command::new($cmd);
 			match cmd.output() {
-				Ok(o,) => Ok(Some(o,),),
-				Err(e,) => Err(anyhow!("{e}"),),
+				Ok(o) => Ok(Some(o)),
+				Err(e) => Err(anyhow!("{e}")),
 			}
 		}
 	}};
@@ -108,7 +108,7 @@ macro_rules! test_eprintln {
 /// 型に対して，サイズかアライメントが異なる場合assertion errorを起こします
 macro_rules! layout {
 	($t:ty,size: $size:expr,align: $align:expr) => {{
-		let a = std::alloc::Layout::new::<$t,>();
+		let a = std::alloc::Layout::new::<$t>();
 		assert_eq!(a.size(), $size);
 		assert_eq!(a.align(), $align);
 	}};
