@@ -338,4 +338,10 @@ mod tests {
 		let bit_field = 0b1 << 1;
 		assert_eq!(bit_field, 0b10);
 	}
+
+	#[test]
+	fn mod_minus() {
+		assert_eq!(-2 % 10, -2);
+		assert_eq!(-25 % 10, -5);
+	}
 }
