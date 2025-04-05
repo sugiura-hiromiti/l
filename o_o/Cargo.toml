@@ -1,5 +1,5 @@
 [package]
-name = "l"
+name = "o_o"
 version = "1.2.7"
 edition = "2024"
 
@@ -21,6 +21,7 @@ futures = { version = "*", features = ["thread-pool"] }
 getrandom = { version = "*", features = ["js"] }
 gloo-utils = { version = "*", features = ["serde"] }
 image = "*"
+o_o_proc_macro = { path = "../o_o_proc_macro" }
 pcap = "*"
 proc-macro2 = "*"
 rand = "*"
