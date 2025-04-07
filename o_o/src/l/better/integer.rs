@@ -7,6 +7,9 @@ use std::ops::MulAssign;
 use std::ops::Sub;
 use std::ops::SubAssign;
 
+#[o_o_proc_macro::empty_trait_impl_block(
+	u8, u16, u32, u64, u128, i8, i16, i32, i64, i128, usize, isize
+)]
 pub trait Integer:
 	Add
 	+ AddAssign
@@ -20,18 +23,7 @@ pub trait Integer:
 	+ Eq
 	+ PartialOrd
 	+ Ord
+	+ Copy
 	+ Sized
 {
 }
-
-macro_rules! impl_integer {
-	($ty:tt) => {
-		impl Integer for $ty {};
-	};
-	($ty:tt, $($tys:tt),+) => {
-		impl Integer for $ty {}
-		impl_integer!($($tys),+);
-	};
-}
-
-//impl_integer!(u8, u16,);

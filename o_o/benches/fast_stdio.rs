@@ -27,6 +27,7 @@ mod tests {
 	const N: usize = 100;
 
 	#[bench]
+	#[ignore = "done"]
 	fn normal_o(b: &mut Bencher,) {
 		b.iter(|| {
 			(0..N).for_each(|_| {
@@ -36,6 +37,7 @@ mod tests {
 	}
 
 	#[bench]
+	#[ignore = "done"]
 	fn lockless(b: &mut Bencher,) {
 		b.iter(|| {
 			let mut err = stderr().lock();
@@ -46,6 +48,7 @@ mod tests {
 	}
 
 	#[bench]
+	#[ignore = "done"]
 	fn no_ln(b: &mut Bencher,) {
 		b.iter(|| {
 			let mut err = stderr().lock();
@@ -56,6 +59,7 @@ mod tests {
 	}
 
 	#[bench]
+	#[ignore = "done"]
 	fn buffering(b: &mut Bencher,) {
 		b.iter(|| {
 			let mut err = BufWriter::new(stderr().lock(),);
@@ -66,6 +70,7 @@ mod tests {
 	}
 
 	#[bench]
+	#[ignore = "done"]
 	fn all_in_once(b: &mut Bencher,) {
 		b.iter(|| {
 			let mut yes = String::with_capacity(N * 3,);
@@ -79,6 +84,7 @@ mod tests {
 	}
 
 	#[bench]
+	#[ignore = "done"]
 	fn all_in_once_with_byte(b: &mut Bencher,) {
 		b.iter(|| {
 			let mut yes = [0; 300];
