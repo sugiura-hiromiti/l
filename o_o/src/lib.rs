@@ -11,6 +11,9 @@ pub mod l;
 
 #[cfg(test)]
 mod tests {
+	use std::cell::RefCell;
+	use std::rc::Rc;
+
 	use super::*;
 	use anyhow::Result as Rslt;
 
@@ -343,5 +346,28 @@ mod tests {
 	fn mod_minus() {
 		assert_eq!(-2 % 10, -2);
 		assert_eq!(-25 % 10, -5);
+	}
+
+	#[test]
+	fn refcell_in_returned_value() {
+		fn return_refcell() -> RefCell<Vec<Rc<i32,>,>,> {
+			let rc = Rc::new(0,);
+			let v = vec![rc];
+			let refcell = RefCell::new(v,);
+			refcell
+		}
+		let a = return_refcell();
+		assert_eq!(a.borrow().len(), 1);
+	}
+
+	#[test]
+	fn refcell_borrowing() {
+		fn map_vec_in_refcell(v: RefCell<Vec<i32,>,>,) -> Vec<i64,> {
+			v.borrow().iter().map(|f| *f as i64,).collect()
+		}
+
+		let v = RefCell::new(vec![0, 1, 2, 3],);
+		let mapped_v = map_vec_in_refcell(v,);
+		assert_eq!(mapped_v.len(), 4);
 	}
 }

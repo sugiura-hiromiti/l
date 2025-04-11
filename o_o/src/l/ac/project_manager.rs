@@ -10,24 +10,24 @@ use strum::IntoEnumIterator;
 /// - `ac`に渡された引数が適切か確認し、問題があればユーザーと対話しながら修正する
 /// - 上記の手順を通じてチェックされたデータを元に`ac`が対象とするプロジェクトを管理します
 pub struct ProjectManager {
-	cli: execution_detail::Cli,
-	work_dir: PathBuf,
+	cli:          execution_detail::Cli,
+	work_dir:     PathBuf,
 	project_root: PathBuf,
-	config: ProjectManagerConfig,
+	config:       ProjectManagerConfig,
 }
 
 impl ProjectManager {
-	pub fn init() -> Result<Self> {
+	pub fn init() -> Result<Self,> {
 		let cur_dir = std::env::current_dir()?;
 		let mut pm = Self {
-			cli: execution_detail::Cli::init(),
-			work_dir: cur_dir.clone(),
+			cli:          execution_detail::Cli::init(),
+			work_dir:     cur_dir.clone(),
 			project_root: cur_dir,
-			config: ProjectManagerConfig::load()?,
+			config:       ProjectManagerConfig::load()?,
 		};
 
 		pm.detect_project()?;
-		Ok(pm)
+		Ok(pm,)
 	}
 
 	/// この関数はコマンドが実行されているpathを必要とします
@@ -38,7 +38,7 @@ impl ProjectManager {
 	///
 	/// - `cli.project_type`がNoneだった場合、プロジェクトの種類を検出して`cli.project_type`
 	///   にセットします
-	fn detect_project(&mut self) -> Result<()> {
+	fn detect_project(&mut self,) -> Result<(),> {
 		self.root_and_type()?;
 		self.init_pick()
 	}
@@ -56,19 +56,19 @@ impl ProjectManager {
 	///
 	/// - プロジェクトルートを探す際に`.git/`を考慮する
 	/// - 設定を反映する
-	fn root_and_type(&mut self) -> Result<()> {
+	fn root_and_type(&mut self,) -> Result<(),> {
 		use execution_detail::ProjectType::*;
 		match self.cli.project_type {
 			// ユーザーがプロジェクトタイプを指定した場合
-			Some(ref pt) => match pt {
+			Some(ref pt,) => match pt {
 				Rust => {
-					if let Some(p) = self.lookup("main.rs")? {
+					if let Some(p,) = self.lookup("main.rs",)? {
 						self.project_root = p;
 					}
 				},
 				// TODO: add support for `rust-project.json`
-				Cargo => match self.lookup("Cargo.toml")? {
-					Some(p) => self.project_root = p,
+				Cargo => match self.lookup("Cargo.toml",)? {
+					Some(p,) => self.project_root = p,
 					None => self.missed_project()?,
 				},
 				RustNvimConfig => {
@@ -76,22 +76,22 @@ impl ProjectManager {
 					// from `self.config.config_home`
 					// or automatically determine by given dotfile repository's url
 					todo!("this project type is currently not supported");
-					match self.lookup("Cargo.toml")? {
-						Some(p) => self.project_root = p,
+					match self.lookup("Cargo.toml",)? {
+						Some(p,) => self.project_root = p,
 						None => self.missed_project()?,
 					}
 				},
 				Just => {
-					if let Some(p) = self.lookup("justfile")? {
+					if let Some(p,) = self.lookup("justfile",)? {
 						self.project_root = p;
 					}
 				},
 				DotFiles => {
-					self.project_root = match std::env::var("XDG_CONFIG_HOME") {
-						Ok(p) => p,
-						Err(_) => match std::env::var("HOME") {
-							Ok(p) => p,
-							Err(_) => {
+					self.project_root = match std::env::var("XDG_CONFIG_HOME",) {
+						Ok(p,) => p,
+						Err(_,) => match std::env::var("HOME",) {
+							Ok(p,) => p,
+							Err(_,) => {
 								unimplemented!("set environment vairable HOME or XDG_CONFIG_HOME")
 							},
 						},
@@ -100,25 +100,25 @@ impl ProjectManager {
 				},
 				Scheme => todo!(),
 				Lisp => todo!(),
-				Zenn => match self.lookup("package.json")? {
-					Some(p) => {
+				Zenn => match self.lookup("package.json",)? {
+					Some(p,) => {
 						let mut file = p.clone();
-						file.push("package.json");
+						file.push("package.json",);
 
 						let pkg_jsn: serde_json::Value =
-							serde_json::from_reader(std::fs::File::open_buffered(file)?)?;
-						match pkg_jsn.get("dependencies") {
-							Some(v1) if v1.get("zenn-cli").is_some() => self.project_root = p,
-							_ => return Err(anyhow!("zenn-cli seems not installed locally")),
+							serde_json::from_reader(std::fs::File::open_buffered(file,)?,)?;
+						match pkg_jsn.get("dependencies",) {
+							Some(v1,) if v1.get("zenn-cli",).is_some() => self.project_root = p,
+							_ => return Err(anyhow!("zenn-cli seems not installed locally"),),
 						}
 					},
 					None => {
 						// `zenn-cli`がグローバルにインストールされていた場合
-						if std::process::Command::new("which").arg("zenn").output().is_ok() {
-							let art_p = self.lookup("articles")?;
-							let book_p = self.lookup("books")?;
-							match (art_p, book_p) {
-								(Some(ap), Some(bp)) => {
+						if std::process::Command::new("which",).arg("zenn",).output().is_ok() {
+							let art_p = self.lookup("articles",)?;
+							let book_p = self.lookup("books",)?;
+							match (art_p, book_p,) {
+								(Some(ap,), Some(bp,),) => {
 									let ap_len = ap.components().count();
 									let bp_len = bp.components().count();
 
@@ -128,8 +128,8 @@ impl ProjectManager {
 										self.project_root = bp;
 									}
 								},
-								(_, Some(p)) | (Some(p), _) => self.project_root = p,
-								(None, None) => self.missed_project()?,
+								(_, Some(p,),) | (Some(p,), _,) => self.project_root = p,
+								(None, None,) => self.missed_project()?,
 							}
 						} else {
 							self.missed_project()?
@@ -140,16 +140,16 @@ impl ProjectManager {
 					// RustNvimConfigとほぼ一緒
 				},
 				TypeScript => {
-					if let Some(p) = self.lookup("package.json")? {
+					if let Some(p,) = self.lookup("package.json",)? {
 						self.project_root = p;
 					}
 				},
-				GAS => match self.lookup("appscript.json")? {
-					Some(p) => self.project_root = p,
+				GAS => match self.lookup("appscript.json",)? {
+					Some(p,) => self.project_root = p,
 					None => self.missed_project()?,
 				},
-				WebSite => match self.lookup("index.html")? {
-					Some(p) => self.project_root = p,
+				WebSite => match self.lookup("index.html",)? {
+					Some(p,) => self.project_root = p,
 					None => self.missed_project()?,
 				},
 				// TODO: `C/CPP`: makefile support
@@ -161,7 +161,7 @@ impl ProjectManager {
 				// PERF: `self.work_dir`にあるファイル、
 				// フォルダの情報を元にある程度プロジェクトタイプを絞る
 				for pt in execution_detail::ProjectType::iter() {
-					self.cli.project_type = Some(pt);
+					self.cli.project_type = Some(pt,);
 					if self.root_and_type().is_ok() {
 						break;
 					}
@@ -169,7 +169,7 @@ impl ProjectManager {
 			},
 		};
 
-		Ok(())
+		Ok((),)
 	}
 
 	/// ユーザーが指定したプロジェクトタイプが間違っていると考えられる場合に適切なエラーを投げる補助関数です
@@ -182,11 +182,11 @@ impl ProjectManager {
 	/// 3. コマンドを終了する
 	/// 4. etc..
 	/// というふうに選択肢を与える
-	fn missed_project(&mut self) -> Result<!> {
+	fn missed_project(&mut self,) -> Result<!,> {
 		Err(anyhow!(
 			"specified project_type `{:?}` seems incorrect",
 			self.cli.project_type.take().unwrap()
-		))
+		),)
 	}
 
 	// `target`という名称のファイルまたはディレクトリを含みかつ、
@@ -199,13 +199,13 @@ impl ProjectManager {
 	//
 	// 現在のパスが`$HOME`を含まない場合 →
 	// `/`内に`target`を含むパスが存在しない場合`Ok(None)`を返します
-	fn lookup(&self, target: &str) -> Result<Option<PathBuf>> {
+	fn lookup(&self, target: &str,) -> Result<Option<PathBuf,>,> {
 		let mut upper_path = self.work_dir.clone();
 
 		loop {
 			for entry in upper_path.read_dir()? {
 				if entry?.file_name() == target {
-					return Ok(Some(upper_path));
+					return Ok(Some(upper_path,),);
 				}
 			}
 
@@ -213,48 +213,48 @@ impl ProjectManager {
 				break;
 			}
 		}
-		Ok(None)
+		Ok(None,)
 	}
 
-	fn lookdown(&self, target: &str) -> Result<Vec<PathBuf>> {
+	fn lookdown(&self, target: &str,) -> Result<Vec<PathBuf,>,> {
 		let mut rslt = vec![];
 		let mut que = util::Queue::new();
-		que.init(self.project_root.clone());
+		que.init(self.project_root.clone(),);
 
-		while let Some(sub_dir) = que.dequeue() {
+		while let Some(sub_dir,) = que.dequeue() {
 			for entry in sub_dir.read_dir()? {
 				let fpath = entry?.path();
 
 				if fpath.is_dir() {
-					que.enqueue(fpath);
+					que.enqueue(fpath,);
 				} else if fpath.is_file() {
-					if fpath.file_name().unwrap().to_str().unwrap().contains(target) {
-						rslt.push(fpath);
+					if fpath.file_name().unwrap().to_str().unwrap().contains(target,) {
+						rslt.push(fpath,);
 					}
 				} else {
 					return Err(anyhow!(
 						"failed to determine the path is dor or file. path may be broken symlink. \
 						 fix problem"
-					));
+					),);
 				}
 			}
 		}
 
-		Ok(rslt)
+		Ok(rslt,)
 	}
 
 	/// この関数は決め打ちで、とりあえず最初にターゲットファイルであろうものを推測して`self.cli.
 	/// target_file`に格納する関数です
-	fn init_pick(&mut self) -> Result<()> {
+	fn init_pick(&mut self,) -> Result<(),> {
 		if self.cli.tarrget_file.is_none() {
-			if let Some(target) = self.cli.target_hint(None) {
-				let cands = self.lookdown(target)?;
+			if let Some(target,) = self.cli.target_hint(None,) {
+				let cands = self.lookdown(target,)?;
 				if !cands.is_empty() {
-					self.cli.tarrget_file = Some(cands[0].clone());
+					self.cli.tarrget_file = Some(cands[0].clone(),);
 				}
 			}
 		}
-		Ok(())
+		Ok((),)
 	}
 
 	/// # 前提
@@ -275,7 +275,7 @@ impl ProjectManager {
 	/// # FIX
 	///
 	/// - 検索の条件として引数`opts`を受け取り、条件に合うファイルのパスを返す
-	fn target_file(&mut self) -> Result<()> {
+	fn target_file(&mut self,) -> Result<(),> {
 		use execution_detail::ProjectType::*;
 		assert!(self.cli.project_type.is_some());
 
@@ -283,11 +283,11 @@ impl ProjectManager {
 			self.cli.tarrget_file = match self.cli.project_type.as_ref().unwrap() {
 				RustNvimConfig => {
 					let mut cargo_toml = self.project_root.clone();
-					cargo_toml.push("Cargo.toml");
-					let config = parser::toml::des_toml(&cargo_toml)?;
-					match config.get("package").unwrap() {
-						toml::Value::Table(pkg) => match pkg.get("name").unwrap() {
-							toml::Value::String(pkg_name) => Some(PathBuf::from(pkg_name)),
+					cargo_toml.push("Cargo.toml",);
+					let config = parser::toml::des_toml(&cargo_toml,)?;
+					match config.get("package",).unwrap() {
+						toml::Value::Table(pkg,) => match pkg.get("name",).unwrap() {
+							toml::Value::String(pkg_name,) => Some(PathBuf::from(pkg_name,),),
 							_ => unreachable!("package name should be declared in Cargo.toml"),
 						},
 						_ => unreachable!("package table should be exist on Cargo.toml"),
@@ -297,12 +297,12 @@ impl ProjectManager {
 				Cargo => None,
 				Rust => {
 					use super::parser::rust;
-					let sources = self.lookdown(".rs")?;
+					let sources = self.lookdown(".rs",)?;
 					let mut rslt = None;
 					for fp in sources {
-						let ast = rust::get_rs_ast(fp.to_str().unwrap())?;
-						if rust::get_fn(&ast, "main").is_some() {
-							rslt = Some(fp);
+						let ast = rust::get_rs_ast(fp.to_str().unwrap(),)?;
+						if rust::get_fn(&ast, "main",).is_some() {
+							rslt = Some(fp,);
 						}
 					}
 
@@ -310,7 +310,7 @@ impl ProjectManager {
 						return Err(anyhow!(
 							"project_type: Rust requires target_file, but `ac` could not \
 							 determine target_file"
-						));
+						),);
 					}
 					rslt
 				},
@@ -337,7 +337,7 @@ impl ProjectManager {
 				Markdown => todo!(),
 				LuaNvimConfig => todo!(),
 				GAS => todo!(),
-				WebSite => Some(self.lookdown("index.html")?[0].clone()),
+				WebSite => Some(self.lookdown("index.html",)?[0].clone(),),
 				C => todo!(),
 				CPP => todo!(),
 				Swift => todo!(),
@@ -348,7 +348,7 @@ impl ProjectManager {
 				TypeScript => todo!(),
 			}
 		}
-		Ok(())
+		Ok((),)
 	}
 }
 
@@ -359,7 +359,7 @@ impl ProjectManager {
 pub struct ProjectManagerConfig {}
 
 impl ProjectManagerConfig {
-	pub fn load() -> Result<Self> {
+	pub fn load() -> Result<Self,> {
 		todo!()
 	}
 }
@@ -369,10 +369,11 @@ mod tests {
 	use super::*;
 
 	#[test]
-	fn path_representation_of_dir() -> Result<()> {
+	#[ignore = "done"]
+	fn path_representation_of_dir() -> Result<(),> {
 		let cur_dir = std::env::current_dir()?;
-		assert_eq!(cur_dir.to_str().unwrap(), "/Users/a/Downloads/QwQ/l");
+		assert_eq!(cur_dir.to_str().unwrap(), "/Users/a/Downloads/QwQ/ac");
 		assert!(cur_dir.is_dir());
-		Ok(())
+		Ok((),)
 	}
 }
