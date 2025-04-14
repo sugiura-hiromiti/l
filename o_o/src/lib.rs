@@ -9,6 +9,12 @@
 
 pub mod l;
 
+enum Status {
+	#[doc = "abc"]
+	a = 0,
+	b = 100,
+}
+
 #[cfg(test)]
 mod tests {
 	use std::cell::RefCell;
@@ -369,5 +375,20 @@ mod tests {
 		let v = RefCell::new(vec![0, 1, 2, 3],);
 		let mapped_v = map_vec_in_refcell(v,);
 		assert_eq!(mapped_v.len(), 4);
+	}
+
+	#[test]
+	fn eq_enum_and_usize() {
+		#[repr(usize)]
+		#[derive(Debug,)]
+		enum Usize {
+			Zero,
+			One,
+			Two,
+		}
+
+		assert_eq!(Usize::Zero as usize, 0);
+		assert_eq!(Usize::One as usize, 1);
+		assert_eq!(Usize::Two as usize, 2);
 	}
 }
