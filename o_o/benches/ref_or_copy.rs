@@ -1,9 +1,16 @@
-//! this module experiments speed of function call with argument
+//! this module experiments how arguments of function affects function call performance
+//!
+//! # ref or copy
+//!
 //! generally, passing reference is guaranteed in terms of speed
 //! for large data type. but is it also true for smaller data type?
 //! especially for types which size is smaller than size of reference
 //! (i.e. u8, u16, u32, i8 ...)
 //! and which size is same to reference (i.e. usize, (u8,u8,u8,u8), )
+//!
+//! # number of parameters
+//!
+//! ---
 
 #![feature(test)]
 
@@ -64,8 +71,10 @@ mod tests {
 		let _p = p;
 	}
 
-	//  TODO: bench &mut
+	// TODO: bench &mut
 	bench_for_all_integers!(u8, u16, u32, u64, u128, i8, i16, i32, i64, i128, usize, isize);
+
+	// TODO: bench fn call with more than 8 arguments
 
 	// fn pass_ref_u8(b: &mut Bencher,) {
 	// 	b.iter(|| {

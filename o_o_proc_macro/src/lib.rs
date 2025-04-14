@@ -105,3 +105,8 @@ pub fn bench_for_all_integers(item: TokenStream,) -> TokenStream {
 	}
 	.into()
 }
+
+#[proc_macro]
+pub fn bench_fn_call_with_more_than_8_args(item: TokenStream,) -> TokenStream {
+	todo!()
+}
