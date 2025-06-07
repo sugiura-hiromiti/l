@@ -75,6 +75,7 @@ mod tests {
 	bench_for_all_integers!(u8, u16, u32, u64, u128, i8, i16, i32, i64, i128, usize, isize);
 
 	// TODO: bench fn call with more than 8 arguments
+	// TODO: how performance affected by memory align and padding of struct
 
 	// fn pass_ref_u8(b: &mut Bencher,) {
 	// 	b.iter(|| {

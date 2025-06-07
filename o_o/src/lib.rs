@@ -391,4 +391,16 @@ mod tests {
 		assert_eq!(Usize::One as usize, 1);
 		assert_eq!(Usize::Two as usize, 2);
 	}
+
+	#[test]
+	fn from_utf16() -> Rslt<(),> {
+		let s = String::from_utf16(&[107, 101, 114, 110, 101, 108, 46, 101, 108, 102,],)?;
+		assert_eq!(s, "kernel.elf");
+		Ok((),)
+	}
+
+	#[test]
+	fn ssoslslsl() {
+		println!("abc");
+	}
 }

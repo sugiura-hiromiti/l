@@ -18,7 +18,7 @@ combine = "*"
 console_error_panic_hook = "0.1.*"
 cursive = "*"
 futures = { version = "*", features = ["thread-pool"] }
-getrandom = { version = "*", features = ["js"] }
+getrandom = { version = "*", features = ["wasm_js"] }
 gloo-utils = { version = "*", features = ["serde"] }
 image = "*"
 o_o_proc_macro = { path = "../o_o_proc_macro" }
@@ -61,4 +61,5 @@ features = [
 [dev-dependencies]
 divan = "*"
 js-sys = "0.3.*"
+oso_loader = { path = "../../oso/oso_loader" }
 wasm-bindgen-test = "0.3.*"
