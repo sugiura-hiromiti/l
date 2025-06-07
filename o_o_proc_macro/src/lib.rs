@@ -1,10 +1,10 @@
+extern crate proc_macro;
+
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use proc_macro2::TokenTree;
 use syn::parse::Parse;
 use syn::parse_macro_input;
-
-extern crate proc_macro;
 
 #[proc_macro_attribute]
 pub fn empty_trait_impl_block(attr: TokenStream, item: TokenStream,) -> TokenStream {
@@ -75,11 +75,33 @@ pub fn bench_for_all_integers(item: TokenStream,) -> TokenStream {
 		};
 
 		let ident = segments.first().unwrap().ident.clone();
-		let ref_fn_ident =
-			syn::Ident::new(&format!("pass_ref_{}", ident.to_string()), Span::call_site(),);
-		let fn_ident =
-			syn::Ident::new(&format!("pass_copy_{}", ident.to_string()), Span::call_site(),);
+		let idnt_builder = |attr: &str| {
+			syn::Ident::new(&format!("pass_{}_{}", attr, ident.to_string()), Span::call_site(),)
+		};
+
+		let fn_ident = idnt_builder("copy",);
+		let ref_fn_ident = idnt_builder("ref",);
+		let mut_ident = idnt_builder("mut",);
+		let mut_ref_ident = idnt_builder("mut_ref",);
 		quote::quote! {
+			#[bench]
+			fn #mut_ref_ident(b: &mut Bencher,) {
+				b.iter(|| {
+					for mut i in 0..(N as #ty) {
+						take_mut_ref(black_box(&mut i,),);
+					}
+				},);
+			}
+
+			#[bench]
+			fn #mut_ident(b: &mut Bencher,) {
+				b.iter(|| {
+					for i in 0..(N as #ty) {
+						take_mut_copy(black_box(i,),);
+					}
+				},);
+			}
+
 			#[bench]
 			fn #ref_fn_ident(b: &mut Bencher,) {
 				b.iter(|| {
@@ -106,7 +128,51 @@ pub fn bench_for_all_integers(item: TokenStream,) -> TokenStream {
 	.into()
 }
 
+const ARGS_COUNT: usize = 10;
+
 #[proc_macro]
 pub fn bench_fn_call_with_more_than_8_args(item: TokenStream,) -> TokenStream {
-	todo!()
+	let item2 = item.clone();
+	let arg_ty = parse_macro_input!(item as syn::Type);
+	let arg_ident = parse_macro_input!(item2 as syn::Ident);
+	let implements = args_benchers(arg_ty, arg_ident,);
+	quote::quote! {
+		#(#implements)*
+	}
+	.into()
+}
+
+fn args_benchers(arg_ty: syn::Type, arg_ident: syn::Ident,) -> Vec<proc_macro2::TokenStream,> {
+	(1..=ARGS_COUNT)
+		.map(|i| {
+			let params: Vec<_,> = (1..=i)
+				.map(|j| syn::Ident::new(&format!("param{j}"), Span::call_site(),),)
+				.collect();
+			let fn_ident_base = format!("take_{i}_{}_args", arg_ident);
+			let fn_ident = syn::Ident::new(&fn_ident_base, Span::call_site(),);
+			let bencher_ident =
+				syn::Ident::new(&format!("bench_{fn_ident_base}"), Span::call_site(),);
+
+			let helper = quote::quote! {
+				fn #fn_ident(#(#params: #arg_ty,)*) {}
+			};
+
+			let args = vec![syn::Ident::new("i", Span::call_site(),); i];
+			let bencher = quote::quote! {
+				#[bench]
+				fn #bencher_ident(b: &mut Bencher){
+					b.iter(|| {
+						for i in 0..(N as #arg_ty) {
+							#fn_ident(#(black_box(#args),)*);
+						}
+					})
+				}
+			};
+
+			quote::quote! {
+				#helper
+				#bencher
+			}
+		},)
+		.collect()
 }
