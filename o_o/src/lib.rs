@@ -403,4 +403,36 @@ mod tests {
 	fn ssoslslsl() {
 		println!("abc");
 	}
+
+	#[test]
+	fn gessing_number() {
+		fn read_number_from_stdin() {
+			let mut buf = String::new();
+
+			loop {
+				// receive user input via stdin
+				print!("> ");
+				let rslt = std::io::stdin().read_line(&mut buf,);
+
+				// treat error by loop
+				match rslt {
+					Ok(read_size,) if buf.len() == read_size => (),
+					Err(e,) => {
+						eprintln!("error: {e:#?}\n\nfailed to get your input. try again");
+						continue;
+					},
+					_ => {
+						eprintln!("invalid read. try again");
+						continue;
+					},
+				};
+
+				let num =
+			}
+		}
+		println!("guess number");
+
+		println!("set minimal number");
+		let min = read_number_from_stdin();
+	}
 }
